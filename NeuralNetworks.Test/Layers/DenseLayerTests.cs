@@ -14,7 +14,7 @@ namespace NeuralNetworks.Test.Layers
             var parameters = new ModelParameters(new float[] { -1f, 2.3f });
             layer.Build(1, parameters, new ModelParameters());
 
-            var result = layer.Update(new float[] { 2f });
+            var result = layer.Update(ParameterRange.Of(2f));
 
             result.Should().HaveCount(2);
             result[0].Should().Be(-2f);
@@ -28,7 +28,7 @@ namespace NeuralNetworks.Test.Layers
             var parameters = new ModelParameters(new float[] { -1f, 2.3f, 1.34f, .5f, -.34f, .2f });
             layer.Build(2, parameters, new ModelParameters());
 
-            var result = layer.Update(new float[] { 2f, -.5f });
+            var result = layer.Update(ParameterRange.Of(2f, -.5f));
 
             result.Should().HaveCount(3);
             result[0].Should().BeApproximately(-3.15f, .01f);

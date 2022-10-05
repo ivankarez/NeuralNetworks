@@ -92,5 +92,25 @@ namespace NeuralNetworks
         {
             return GetEnumerator();
         }
+
+        public void CopyTo(float[] values)
+        {
+            for (int i = 0; i < Size; i++)
+            {
+                values[i] = this[i];
+            }
+        }
+
+        public float[] ToArray()
+        {
+            var result = new float[Size];
+            CopyTo(result);
+            return result;
+        }
+
+        public static ParameterRange Of(params float[] values)
+        {
+            return new ParameterRange(0, values.Length, values);
+        }
     }
 }

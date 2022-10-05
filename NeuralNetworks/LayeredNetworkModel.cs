@@ -8,6 +8,7 @@ namespace NeuralNetworks
         private readonly IModelLayer[] layers;
         private readonly ModelParameters parameters;
         private readonly ModelParameters values;
+        private readonly float[] outputArray;
 
         public int Inputs { get; }
         public ModelParameters Parameters => parameters;
@@ -22,6 +23,7 @@ namespace NeuralNetworks
 
             parameters = new ModelParameters();
             values = new ModelParameters();
+            outputArray = new float[layers[layers.Length - 1].NodeCount];
 
             Build();
         }
@@ -40,12 +42,14 @@ namespace NeuralNetworks
         {
             if (inputValues.Length != Inputs) throw new ArgumentException($"Must have length of {Inputs}", nameof(inputValues));
 
-            var prevLayerOutputs = inputValues;
+            var prevLayerOutputs = new ParameterRange(0, inputValues.Length, inputValues);
             foreach (var layer in layers)
             {
                 prevLayerOutputs = layer.Update(prevLayerOutputs);
             }
-            return prevLayerOutputs;
+            prevLayerOutputs.CopyTo(outputArray);
+
+            return outputArray; // Todo use custom read-only return type
         }
     }
 }

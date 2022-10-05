@@ -6,6 +6,6 @@
 
         public void Build(int prevLayerSize, ModelParameters parameterBuilder, ModelParameters valueBuilder);
 
-        public float[] Update(float[] inputValues);
+        public ParameterRange Update(ParameterRange inputValues);
     }
 }
