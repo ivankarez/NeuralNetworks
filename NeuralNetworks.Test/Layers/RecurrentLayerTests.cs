@@ -11,7 +11,7 @@ namespace NeuralNetworks.Test.Layers
         public void TestUpdate_HappyPath()
         {
             var layer = new RecurrentLayer(2, new LinearActivation());
-            var parameters = new ModelParameters(new float[] {1, -1, .5f, -.5f });
+            var parameters = new ModelParameters(new float[] { 1, -1, .5f, -.5f });
             var values = new ModelParameters();
 
             layer.Build(1, parameters, values);
@@ -45,7 +45,7 @@ namespace NeuralNetworks.Test.Layers
         public void TestUpdate_SameAsDenseIfNoRecurrentWeight()
         {
             var recurrentLayer = new RecurrentLayer(2, new LinearActivation());
-            var denseLayer = new DenseLayer(2, new LinearActivation());
+            var denseLayer = new DenseLayer(2, new LinearActivation(), false);
 
             var recurrentParameters = new ModelParameters(new float[] { 1, 0f, .5f, 0f });
             var recurrentValues = new ModelParameters();

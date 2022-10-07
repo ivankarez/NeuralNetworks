@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Karoly Ivan</Authors>
+    <Version>2.1</Version>
   </PropertyGroup>
 
 </Project>

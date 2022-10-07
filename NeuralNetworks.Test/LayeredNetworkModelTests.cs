@@ -43,8 +43,8 @@ namespace NeuralNetworks.Test
         private static LayeredNetworkModel CreateTestModel()
         {
             var activation = new LinearActivation();
-            var layer1 = new DenseLayer(3, activation);
-            var layer2 = new DenseLayer(2, activation);
+            var layer1 = new DenseLayer(3, activation, false);
+            var layer2 = new DenseLayer(2, activation, false);
             return new LayeredNetworkModel(1, layer1, layer2);
         }
 
