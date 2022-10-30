@@ -12,6 +12,7 @@ namespace NeuralNetworks
 
         public int Inputs { get; }
         public ModelParameters Parameters => parameters;
+        public ModelParameters Values => values;
 
         public LayeredNetworkModel(int inputs, params IModelLayer[] layers)
         {
