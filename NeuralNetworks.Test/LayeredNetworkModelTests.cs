@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
-using NeuralNetworks.Activations;
-using NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.Activations;
+using Ivankarez.NeuralNetworks.Layers;
 using NUnit.Framework;
 using System;
 
-namespace NeuralNetworks.Test
+namespace Ivankarez.NeuralNetworks.Test
 {
     public class LayeredNetworkModelTests
     {

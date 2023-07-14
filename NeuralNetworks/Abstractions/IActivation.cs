@@ -1,4 +1,4 @@
-﻿namespace NeuralNetworks.Abstractions
+﻿namespace Ivankarez.NeuralNetworks.Abstractions
 {
     public interface IActivation
     {

@@ -1,7 +1,7 @@
-﻿using NeuralNetworks.Abstractions;
+﻿using Ivankarez.NeuralNetworks.Abstractions;
 using System;
 
-namespace NeuralNetworks
+namespace Ivankarez.NeuralNetworks
 {
     public class LayeredNetworkModel
     {

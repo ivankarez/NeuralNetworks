@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using NeuralNetworks.Activations;
-using NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.Activations;
+using Ivankarez.NeuralNetworks.Layers;
 using NUnit.Framework;
 
-namespace NeuralNetworks.Test.Layers
+namespace Ivankarez.NeuralNetworks.Test.Layers
 {
     public class DenseLayerTests
     {

@@ -1,7 +1,7 @@
-﻿using NeuralNetworks.Abstractions;
+﻿using Ivankarez.NeuralNetworks.Abstractions;
 using System;
 
-namespace NeuralNetworks.Activations
+namespace Ivankarez.NeuralNetworks.Activations
 {
     public class ClampedLinearActivation : IActivation
     {

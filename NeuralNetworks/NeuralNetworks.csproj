@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Authors>Karoly Ivan</Authors>
+    <Authors>Károly Iván</Authors>
     <Version>2.1</Version>
+    <RootNamespace>Ivankarez.NeuralNetworks</RootNamespace>
   </PropertyGroup>
 
 </Project>

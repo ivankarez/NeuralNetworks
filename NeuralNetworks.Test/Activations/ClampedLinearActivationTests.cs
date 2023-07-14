@@ -1,8 +1,8 @@
 using FluentAssertions;
-using NeuralNetworks.Activations;
+using Ivankarez.NeuralNetworks.Activations;
 using NUnit.Framework;
 
-namespace NeuralNetworks.Test.Activations
+namespace Ivankarez.NeuralNetworks.Test.Activations
 {
     public class ClampedLinearActivationTests
     {

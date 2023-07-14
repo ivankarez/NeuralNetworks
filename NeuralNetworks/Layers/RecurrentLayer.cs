@@ -1,7 +1,7 @@
-﻿using NeuralNetworks.Abstractions;
+﻿using Ivankarez.NeuralNetworks.Abstractions;
 using System;
 
-namespace NeuralNetworks.Layers
+namespace Ivankarez.NeuralNetworks.Layers
 {
     public class RecurrentLayer : IModelLayer
     {

@@ -1,6 +1,6 @@
-﻿using NeuralNetworks.Abstractions;
+﻿using Ivankarez.NeuralNetworks.Abstractions;
 
-namespace NeuralNetworks.Activations
+namespace Ivankarez.NeuralNetworks.Activations
 {
     public class LinearActivation : IActivation
     {
