@@ -2,7 +2,6 @@
 using Ivankarez.NeuralNetworks.Extensions;
 using Ivankarez.NeuralNetworks.Values;
 using System;
-using System.Linq;
 
 namespace Ivankarez.NeuralNetworks
 {

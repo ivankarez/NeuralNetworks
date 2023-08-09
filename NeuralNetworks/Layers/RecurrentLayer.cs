@@ -2,7 +2,6 @@
 using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Ivankarez.NeuralNetworks.Layers
 {
