@@ -45,9 +45,6 @@ namespace Ivankarez.NeuralNetworks
             }
         }
 
-        [Obsolete("Use Feedforward instead")]
-        public float[] Predict(float[] inputValues) => Feedforward(inputValues).ToArray();
-
         public IReadonlyValueArray Feedforward(float[] inputValues)
         {
             if (inputValues.Length != Inputs) throw new ArgumentException($"Must have length of {Inputs}", nameof(inputValues));
