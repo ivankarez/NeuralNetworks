@@ -9,12 +9,12 @@ namespace Ivankarez.NeuralNetworks.Test
     public class LayeredNetworkModelTests
     {
         [Test]
-        public void TestPredict_HappyPath()
+        public void TestFeedforward_HappyPath()
         {
             var model = CreateTestModel();
             Randomize(model);
 
-            var result = model.Predict(new float[] { .5f });
+            var result = model.Feedforward(new float[] { .5f });
 
             result.Should().HaveCount(2);
             result[0].Should().BeApproximately(-.1286f, 0.001f);
@@ -22,7 +22,7 @@ namespace Ivankarez.NeuralNetworks.Test
         }
 
         [Test]
-        public void TestPredict_CopyParameters()
+        public void TestFeedforward_CopyParameters()
         {
             var model1 = CreateTestModel();
             Randomize(model1);
@@ -34,8 +34,8 @@ namespace Ivankarez.NeuralNetworks.Test
             }
 
             var inputs = new float[] { .12f };
-            var result1 = model1.Predict(inputs);
-            var result2 = model2.Predict(inputs);
+            var result1 = model1.Feedforward(inputs);
+            var result2 = model2.Feedforward(inputs);
 
             result2.Should().BeEquivalentTo(result1);
         }

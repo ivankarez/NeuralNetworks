@@ -1,11 +1,13 @@
-﻿namespace Ivankarez.NeuralNetworks.Abstractions
+﻿using Ivankarez.NeuralNetworks.Values;
+
+namespace Ivankarez.NeuralNetworks.Abstractions
 {
     public interface IModelLayer
     {
         public int NodeCount { get; }
 
-        public void Build(int prevLayerSize, ModelParameters parameterBuilder, ModelParameters valueBuilder);
+        public void Build(int prevLayerSize, ValueStore parameters, ValueStore state);
 
-        public ParameterRange Update(ParameterRange inputValues);
+        public IValueArray Update(IValueArray inputValues);
     }
 }

@@ -1,18 +1,22 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.Extensions;
+using Ivankarez.NeuralNetworks.Values;
 using System;
+using System.Linq;
 
 namespace Ivankarez.NeuralNetworks
 {
     public class LayeredNetworkModel
     {
         private readonly IModelLayer[] layers;
-        private readonly ModelParameters parameters;
-        private readonly ModelParameters values;
-        private readonly float[] outputArray;
+        private readonly ValueStore parameters;
+        private readonly ValueStore state;
+        private readonly IValueArray outputArray;
+        private readonly IValueArray inputArray;
 
         public int Inputs { get; }
-        public ModelParameters Parameters => parameters;
-        public ModelParameters Values => values;
+        public ValueStore Parameters => parameters;
+        public ValueStore State => state;
 
         public LayeredNetworkModel(int inputs, params IModelLayer[] layers)
         {
@@ -22,9 +26,11 @@ namespace Ivankarez.NeuralNetworks
             if (layers.Length == 0) throw new ArgumentException("Must have at least 1 element", nameof(layers));
             this.layers = layers;
 
-            parameters = new ModelParameters();
-            values = new ModelParameters();
-            outputArray = new float[layers[layers.Length - 1].NodeCount];
+            parameters = new ValueStore();
+            state = new ValueStore();
+            var outputSize = layers[layers.Length - 1].NodeCount;
+            outputArray = new ValueArray(new float[outputSize]);
+            inputArray = new ValueArray(new float[inputs]);
 
             Build();
         }
@@ -34,21 +40,25 @@ namespace Ivankarez.NeuralNetworks
             var prevLayerSize = Inputs;
             foreach (var layer in layers)
             {
-                layer.Build(prevLayerSize, parameters, values);
+                layer.Build(prevLayerSize, parameters, state);
                 prevLayerSize = layer.NodeCount;
             }
         }
 
-        public float[] Predict(float[] inputValues)
+        [Obsolete("Use Feedforward instead")]
+        public float[] Predict(float[] inputValues) => Feedforward(inputValues).ToArray();
+
+        public IReadonlyValueArray Feedforward(float[] inputValues)
         {
             if (inputValues.Length != Inputs) throw new ArgumentException($"Must have length of {Inputs}", nameof(inputValues));
 
-            var prevLayerOutputs = new ParameterRange(0, inputValues.Length, inputValues);
+            inputArray.SetValues(inputValues);
+            var prevLayerOutputs = inputArray;
             foreach (var layer in layers)
             {
                 prevLayerOutputs = layer.Update(prevLayerOutputs);
             }
-            prevLayerOutputs.CopyTo(outputArray);
+            outputArray.SetValues(prevLayerOutputs);
 
             return outputArray; // Todo use custom read-only return type
         }

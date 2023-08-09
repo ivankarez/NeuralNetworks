@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Activations;
 using Ivankarez.NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.Values;
 using NUnit.Framework;
 
 namespace Ivankarez.NeuralNetworks.Test.Layers
@@ -11,10 +12,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_HappyPath()
         {
             var layer = new DenseLayer(2, new LinearActivation(), false);
-            var parameters = new ModelParameters(new float[] { -1f, 2.3f });
-            layer.Build(1, parameters, new ModelParameters());
+            var parameters = new ValueStore(new float[] { -1f, 2.3f });
+            layer.Build(1, parameters, new ValueStore());
 
-            var result = layer.Update(ParameterRange.Of(2f));
+            var result = layer.Update(ValueStoreRange.Of(2f));
 
             result.Should().HaveCount(2);
             result[0].Should().Be(-2f);
@@ -25,10 +26,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_HappyPath2()
         {
             var layer = new DenseLayer(3, new LinearActivation(), false);
-            var parameters = new ModelParameters(new float[] { -1f, 2.3f, 1.34f, .5f, -.34f, .2f });
-            layer.Build(2, parameters, new ModelParameters());
+            var parameters = new ValueStore(new float[] { -1f, 2.3f, 1.34f, .5f, -.34f, .2f });
+            layer.Build(2, parameters, new ValueStore());
 
-            var result = layer.Update(ParameterRange.Of(2f, -.5f));
+            var result = layer.Update(ValueStoreRange.Of(2f, -.5f));
 
             result.Should().HaveCount(3);
             result[0].Should().BeApproximately(-3.15f, .01f);
@@ -40,10 +41,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_WithBias()
         {
             var layer = new DenseLayer(2, new LinearActivation(), true);
-            var parameters = new ModelParameters(new float[] { 0, .5f, 0, -.23f });
-            layer.Build(1, parameters, new ModelParameters());
+            var parameters = new ValueStore(new float[] { 0, .5f, 0, -.23f });
+            layer.Build(1, parameters, new ValueStore());
 
-            var result = layer.Update(ParameterRange.Of(2f));
+            var result = layer.Update(ValueStoreRange.Of(2f));
 
             result.Should().HaveCount(2);
             result[0].Should().Be(.5f);

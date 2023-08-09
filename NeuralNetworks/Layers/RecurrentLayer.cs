@@ -1,4 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -10,8 +11,8 @@ namespace Ivankarez.NeuralNetworks.Layers
         private readonly IActivation activation;
 
         private float[] nodeInputs;
-        private ParameterRange[] weights;
-        private ParameterRange kernels;
+        private ValueStoreRange[] weights;
+        private ValueStoreRange kernels;
 
         public RecurrentLayer(int nodeCount, IActivation activation)
         {
@@ -22,24 +23,24 @@ namespace Ivankarez.NeuralNetworks.Layers
             this.activation = activation;
         }
 
-        public void Build(int prevLayerSize, ModelParameters parameterBuilder, ModelParameters valueBuilder)
+        public void Build(int prevLayerSize, ValueStore parameters, ValueStore state)
         {
-            weights = new ParameterRange[NodeCount];
+            weights = new ValueStoreRange[NodeCount];
             for (int i = 0; i < NodeCount; i++)
             {
-                weights[i] = parameterBuilder.AllocateRange(prevLayerSize + 1);
+                weights[i] = parameters.AllocateRange(prevLayerSize + 1);
             }
             nodeInputs = new float[prevLayerSize + 1];
-            kernels = valueBuilder.AllocateRange(NodeCount);
+            kernels = state.AllocateRange(NodeCount);
         }
 
-        public ParameterRange Update(ParameterRange inputValues)
+        public IValueArray Update(IValueArray inputValues)
         {
             var recurrentInputIndex = nodeInputs.Length - 1;
             for (int nodeIndex = 0; nodeIndex < NodeCount; nodeIndex++)
             {
                 var nodeWeights = weights[nodeIndex];
-                for (int inputIndex = 0; inputIndex < inputValues.Size; inputIndex++)
+                for (int inputIndex = 0; inputIndex < inputValues.Count; inputIndex++)
                 {
                     nodeInputs[inputIndex] = inputValues[inputIndex] * nodeWeights[inputIndex];
                 }

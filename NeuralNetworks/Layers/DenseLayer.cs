@@ -1,4 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -9,8 +10,8 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         private readonly IActivation activation;
 
-        private ParameterRange[] weights;
-        private ParameterRange kernels;
+        private ValueStoreRange[] weights;
+        private ValueStoreRange kernels;
         private float[] nodeInputs;
         private readonly bool useBias;
 
@@ -24,25 +25,25 @@ namespace Ivankarez.NeuralNetworks.Layers
             this.useBias = useBias;
         }
 
-        public void Build(int prevLayerSize, ModelParameters parameterBuilder, ModelParameters stateBuilder)
+        public void Build(int prevLayerSize, ValueStore parameters, ValueStore state)
         {
             var nodeInputSize = useBias ? prevLayerSize + 1 : prevLayerSize;
-            weights = new ParameterRange[NodeCount];
+            weights = new ValueStoreRange[NodeCount];
             for (int i = 0; i < NodeCount; i++)
             {
-                weights[i] = parameterBuilder.AllocateRange(nodeInputSize);
+                weights[i] = parameters.AllocateRange(nodeInputSize);
             }
-            kernels = stateBuilder.AllocateRange(NodeCount);
+            kernels = state.AllocateRange(NodeCount);
             nodeInputs = new float[nodeInputSize];
         }
 
-        public ParameterRange Update(ParameterRange inputValues)
+        public IValueArray Update(IValueArray inputValues)
         {
             var biasIndex = nodeInputs.Length - 1;
             for (int nodeIndex = 0; nodeIndex < NodeCount; nodeIndex++)
             {
                 var nodeWeights = weights[nodeIndex];
-                for (int inputIndex = 0; inputIndex < inputValues.Size; inputIndex++)
+                for (int inputIndex = 0; inputIndex < inputValues.Count; inputIndex++)
                 {
                     nodeInputs[inputIndex] = inputValues[inputIndex] * nodeWeights[inputIndex];
                 }
