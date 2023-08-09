@@ -6,26 +6,17 @@ namespace Ivankarez.NeuralNetworks.Test.Activations
 {
     public class ClampedLinearActivationTests
     {
-        [Test]
-        public void TestApply_ClampMin()
+        [TestCase(-1, 1, new float[] { 0f }, 0f)]
+        [TestCase(-1, 1, new float[] { 1f }, 1f)]
+        [TestCase(-1, 1, new float[] { -1f }, -1f)]
+        [TestCase(-1, 1, new float[] { -1f, 1f }, 0f)]
+        [TestCase(-1, 1, new float[] { -12f, 10f }, -1f)]
+        [TestCase(-1, 1.5f, new float[] { 12f, -10f }, 1.5f)]
+        [TestCase(1, 1.5f, new float[] { 0f }, 1f)]
+        public void TestApply(float min, float max, float[] inputs, float expectedOutput)
         {
-            var activation = new ClampedLinearActivation(-1, 1);
-            var inputs = new float[] { -1.5f, -1.2f, 1f };
-
-            var output = activation.Apply(inputs);
-
-            output.Should().Be(-1);
-        }
-
-        [Test]
-        public void TestApply_ClampMax()
-        {
-            var activation = new ClampedLinearActivation(-1, 1);
-            var inputs = new float[] { 1.5f, 1.2f, 1f };
-
-            var output = activation.Apply(inputs);
-
-            output.Should().Be(1);
+            var output = new ClampedLinearActivation(min, max).Apply(inputs);
+            output.Should().Be(expectedOutput);
         }
     }
 }

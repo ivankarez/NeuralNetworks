@@ -6,15 +6,15 @@ namespace Ivankarez.NeuralNetworks.Test.Activations
 {
     public class LinearActivationTests
     {
-        [Test]
-        public void TestApply_HappyPath()
+        [TestCase(new float[] { 0f }, 0f)]
+        [TestCase(new float[] { 1f }, 1f)]
+        [TestCase(new float[] { -1f }, -1f)]
+        [TestCase(new float[] { -1f, 1f }, 0f)]
+        [TestCase(new float[] { -12f, 10f }, -2f)]
+        public void TestApply(float[] inputs, float expectedOutput)
         {
-            var activation = new LinearActivation();
-            var inputs = new float[] { 1.5f, -1.2f, 1f };
-
-            var output = activation.Apply(inputs);
-
-            output.Should().Be(1.3f);
+            var output = new LinearActivation().Apply(inputs);
+            output.Should().Be(expectedOutput);
         }
     }
 }
