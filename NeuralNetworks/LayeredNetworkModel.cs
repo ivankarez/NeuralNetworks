@@ -49,12 +49,12 @@ namespace Ivankarez.NeuralNetworks
             if (inputValues.Length != Inputs) throw new ArgumentException($"Must have length of {Inputs}", nameof(inputValues));
 
             inputArray.SetValues(inputValues);
-            var prevLayerOutputs = inputArray;
+            var layerInputs = inputArray;
             foreach (var layer in layers)
             {
-                prevLayerOutputs = layer.Update(prevLayerOutputs);
+                layerInputs = layer.Update(layerInputs);
             }
-            outputArray.SetValues(prevLayerOutputs);
+            outputArray.SetValues(layerInputs);
 
             return outputArray;
         }
