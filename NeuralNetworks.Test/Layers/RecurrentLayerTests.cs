@@ -12,7 +12,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_HappyPath()
         {
-            var layer = new RecurrentLayer(2, new LinearActivation());
+            var layer = new RecurrentLayer(2, new LinearActivation(), false);
             var parameters = new ValueStore(new float[] { 1, .5f, -1, -.5f });
             var values = new ValueStore();
 
@@ -27,9 +27,26 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         }
 
         [Test]
+        public void TestUpdate_HappyPathWithBias()
+        {
+            var layer = new RecurrentLayer(2, new LinearActivation(), true);
+            var parameters = new ValueStore(new float[] { 0f, 1.5f, 0f, 0.3f, 0f, 0f });
+            var values = new ValueStore();
+
+            layer.Build(1, parameters, values);
+            var result = layer.Update(ValueStoreRange.Of(0f));
+
+            result.Count.Should().Be(2);
+            result[0].Should().Be(1.5f);
+            result[1].Should().Be(0.3f);
+
+            values.Values.Should().HaveCount(2);
+        }
+
+        [Test]
         public void TestUpdate_NotIdempotent()
         {
-            var layer = new RecurrentLayer(2, new LinearActivation());
+            var layer = new RecurrentLayer(2, new LinearActivation(), false);
             var parameters = new ValueStore(new float[] { 1, .5f, .1f, .1f });
             var values = new ValueStore();
 
@@ -46,7 +63,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_SameAsDenseIfNoRecurrentWeight()
         {
-            var recurrentLayer = new RecurrentLayer(2, new LinearActivation());
+            var recurrentLayer = new RecurrentLayer(2, new LinearActivation(), false);
             var denseLayer = new DenseLayer(2, new LinearActivation(), false);
 
             var recurrentParameters = new ValueStore(new float[] { 1, .5f, 0f, 0f });
