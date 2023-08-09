@@ -1,4 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 
@@ -40,10 +41,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             for (int nodeIndex = 0; nodeIndex < NodeCount; nodeIndex++)
             {
                 var nodeWeights = weights[nodeIndex];
-                for (int inputIndex = 0; inputIndex < inputValues.Count; inputIndex++)
-                {
-                    nodeInputs[inputIndex] = inputValues[inputIndex] * nodeWeights[inputIndex];
-                }
+                MathUtils.ElementwiseMultiply(inputValues, nodeWeights, nodeInputs);
                 nodeInputs[recurrentInputIndex] = kernels[nodeIndex] * nodeWeights[recurrentInputIndex];
                 kernels[nodeIndex] = activation.Apply(nodeInputs);
             }
