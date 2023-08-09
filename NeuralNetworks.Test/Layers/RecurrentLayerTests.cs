@@ -13,7 +13,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_HappyPath()
         {
             var layer = new RecurrentLayer(2, new LinearActivation());
-            var parameters = new ValueStore(new float[] { 1, -1, .5f, -.5f });
+            var parameters = new ValueStore(new float[] { 1, .5f, -1, -.5f });
             var values = new ValueStore();
 
             layer.Build(1, parameters, values);
@@ -30,7 +30,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_NotIdempotent()
         {
             var layer = new RecurrentLayer(2, new LinearActivation());
-            var parameters = new ValueStore(new float[] { 1, .1f, .5f, .1f });
+            var parameters = new ValueStore(new float[] { 1, .5f, .1f, .1f });
             var values = new ValueStore();
 
             layer.Build(1, parameters, values);
@@ -49,7 +49,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var recurrentLayer = new RecurrentLayer(2, new LinearActivation());
             var denseLayer = new DenseLayer(2, new LinearActivation(), false);
 
-            var recurrentParameters = new ValueStore(new float[] { 1, 0f, .5f, 0f });
+            var recurrentParameters = new ValueStore(new float[] { 1, .5f, 0f, 0f });
             var recurrentValues = new ValueStore();
             var denseParameters = new ValueStore(new float[] { 1, .5f });
             var denseVaues = new ValueStore();

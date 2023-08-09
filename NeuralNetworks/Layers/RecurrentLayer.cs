@@ -13,6 +13,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         private float[] nodeInputs;
         private ValueStoreRange[] weights;
+        private ValueStoreRange recurrentWeights;
         private ValueStoreRange kernels;
 
         public RecurrentLayer(int nodeCount, IActivation activation)
@@ -29,8 +30,9 @@ namespace Ivankarez.NeuralNetworks.Layers
             weights = new ValueStoreRange[NodeCount];
             for (int i = 0; i < NodeCount; i++)
             {
-                weights[i] = parameters.AllocateRange(prevLayerSize + 1);
+                weights[i] = parameters.AllocateRange(prevLayerSize);
             }
+            recurrentWeights = parameters.AllocateRange(NodeCount);
             nodeInputs = new float[prevLayerSize + 1];
             kernels = state.AllocateRange(NodeCount);
         }
@@ -42,7 +44,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 var nodeWeights = weights[nodeIndex];
                 MathUtils.ElementwiseMultiply(inputValues, nodeWeights, nodeInputs);
-                nodeInputs[recurrentInputIndex] = kernels[nodeIndex] * nodeWeights[recurrentInputIndex];
+                nodeInputs[recurrentInputIndex] = kernels[nodeIndex] * recurrentWeights[nodeIndex];
                 kernels[nodeIndex] = activation.Apply(nodeInputs);
             }
             return kernels;
