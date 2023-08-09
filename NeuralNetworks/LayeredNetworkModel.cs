@@ -57,7 +57,7 @@ namespace Ivankarez.NeuralNetworks
             }
             outputArray.SetValues(prevLayerOutputs);
 
-            return outputArray; // Todo use custom read-only return type
+            return outputArray;
         }
     }
 }
