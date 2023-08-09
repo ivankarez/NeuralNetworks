@@ -2,6 +2,7 @@
 using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Ivankarez.NeuralNetworks.Layers
 {
@@ -39,15 +40,19 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public IValueArray Update(IValueArray inputValues)
         {
-            var recurrentInputIndex = nodeInputs.Length - 1;
             for (int nodeIndex = 0; nodeIndex < NodeCount; nodeIndex++)
             {
                 var nodeWeights = weights[nodeIndex];
                 MathUtils.ElementwiseMultiply(inputValues, nodeWeights, nodeInputs);
-                nodeInputs[recurrentInputIndex] = kernels[nodeIndex] * recurrentWeights[nodeIndex];
+                SetRecurrentInput(kernels[nodeIndex] * recurrentWeights[nodeIndex]);
                 kernels[nodeIndex] = activation.Apply(nodeInputs);
             }
             return kernels;
+        }
+
+        private void SetRecurrentInput(float value)
+        {
+            nodeInputs[^1] = value;
         }
     }
 }
