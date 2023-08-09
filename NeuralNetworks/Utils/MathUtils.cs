@@ -1,4 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.Values;
 
 namespace Ivankarez.NeuralNetworks.Utils
 {
@@ -9,6 +10,22 @@ namespace Ivankarez.NeuralNetworks.Utils
             for (int i = 0; i < a.Count; i++)
             {
                 result[i] = a[i] * b[i];
+            }
+        }
+
+        public static void ElementwiseMultiplyAdditive(IValueArray a, IValueArray b, float[] result)
+        {
+            for (int i = 0; i < a.Count; i++)
+            {
+                result[i] += a[i] * b[i];
+            }
+        }
+
+        internal static void ElementwiseMultiply(ValueStoreRange a, float b, ValueStoreRange result)
+        {
+            for (int i = 0; i < a.Count; i++)
+            {
+                result[i] = a[i] * b;
             }
         }
     }
