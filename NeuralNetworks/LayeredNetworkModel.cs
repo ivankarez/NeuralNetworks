@@ -36,11 +36,11 @@ namespace Ivankarez.NeuralNetworks
 
         private void Build()
         {
-            var prevLayerSize = Inputs;
+            var inputSize = Inputs;
             foreach (var layer in layers)
             {
-                layer.Build(prevLayerSize, parameters, state);
-                prevLayerSize = layer.NodeCount;
+                layer.Build(inputSize, parameters, state);
+                inputSize = layer.NodeCount;
             }
         }
 

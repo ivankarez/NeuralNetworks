@@ -26,9 +26,9 @@ namespace Ivankarez.NeuralNetworks.Layers
             this.useBias = useBias;
         }
 
-        public void Build(int prevLayerSize, ValueStore parameters, ValueStore state)
+        public void Build(int inputSize, ValueStore parameters, ValueStore state)
         {
-            var nodeInputSize = useBias ? prevLayerSize + 1 : prevLayerSize;
+            var nodeInputSize = useBias ? inputSize + 1 : inputSize;
             weights = new ValueStoreRange[NodeCount];
             for (int i = 0; i < NodeCount; i++)
             {

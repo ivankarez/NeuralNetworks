@@ -25,15 +25,15 @@ namespace Ivankarez.NeuralNetworks.Layers
             this.activation = activation;
         }
 
-        public void Build(int prevLayerSize, ValueStore parameters, ValueStore state)
+        public void Build(int inputSize, ValueStore parameters, ValueStore state)
         {
             weights = new ValueStoreRange[NodeCount];
             for (int i = 0; i < NodeCount; i++)
             {
-                weights[i] = parameters.AllocateRange(prevLayerSize);
+                weights[i] = parameters.AllocateRange(inputSize);
             }
             recurrentWeights = parameters.AllocateRange(NodeCount);
-            nodeInputs = new float[prevLayerSize + 1];
+            nodeInputs = new float[inputSize + 1];
             kernels = state.AllocateRange(NodeCount);
         }
 
