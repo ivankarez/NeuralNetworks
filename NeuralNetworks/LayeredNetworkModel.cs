@@ -8,30 +8,29 @@ namespace Ivankarez.NeuralNetworks
     public class LayeredNetworkModel
     {
         private readonly IModelLayer[] layers;
-        private readonly ValueStore parameters;
-        private readonly ValueStore state;
         private readonly IValueArray outputArray;
         private readonly IValueArray inputArray;
 
         public int Inputs { get; }
-        public ValueStore Parameters => parameters;
-        public ValueStore State => state;
+        public ValueStore Parameters { get; }
+        public ValueStore State { get; }
 
         public LayeredNetworkModel(int inputs, params IModelLayer[] layers)
         {
             if (inputs <= 0) throw new ArgumentOutOfRangeException(nameof(inputs), "Must be bigger than 0");
-            Inputs = inputs;
-
             if (layers.Length == 0) throw new ArgumentException("Must have at least 1 element", nameof(layers));
+
+            Inputs = inputs;
             this.layers = layers;
 
-            parameters = new ValueStore();
-            state = new ValueStore();
-            var outputSize = layers[layers.Length - 1].NodeCount;
-            outputArray = new ValueArray(new float[outputSize]);
-            inputArray = new ValueArray(new float[inputs]);
+            Parameters = new ValueStore();
+            State = new ValueStore();
 
             Build();
+
+            var outputSize = layers[^1].NodeCount;
+            outputArray = new ValueArray(new float[outputSize]);
+            inputArray = new ValueArray(new float[inputs]);
         }
 
         private void Build()
@@ -39,7 +38,7 @@ namespace Ivankarez.NeuralNetworks
             var inputSize = Inputs;
             foreach (var layer in layers)
             {
-                layer.Build(inputSize, parameters, state);
+                layer.Build(inputSize, Parameters, State);
                 inputSize = layer.NodeCount;
             }
         }
