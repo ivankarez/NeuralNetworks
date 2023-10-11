@@ -4,15 +4,9 @@ namespace Ivankarez.NeuralNetworks.Activations
 {
     public class LinearActivation : IActivation
     {
-        public float Apply(float[] inputs)
+        public float Apply(float input)
         {
-            var sum = 0f;
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                sum += inputs[i];
-            }
-
-            return sum;
+            return input;
         }
     }
 }

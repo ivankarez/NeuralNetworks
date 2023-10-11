@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Layers;
-using Ivankarez.NeuralNetworks.Values;
 using NUnit.Framework;
 
 namespace Ivankarez.NeuralNetworks.Test.Layers
@@ -11,10 +10,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_MaxPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Max);
-            layer.Build(9, new ValueStore(), new ValueStore());
+            layer.Build(9);
             layer.NodeCount.Should().Be(3);
 
-            var result = layer.Update(ValueStoreRange.Of(1f, 2f, 3f, 5f, 1f, 1f, -1f, -2f, -1f));
+            var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, 1f, -1f, -2f, -1f });
 
             result.Should().HaveCount(3);
             result[0].Should().Be(3f);
@@ -26,10 +25,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_MinPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Min);
-            layer.Build(9, new ValueStore(), new ValueStore());
+            layer.Build(9);
             layer.NodeCount.Should().Be(3);
 
-            var result = layer.Update(ValueStoreRange.Of(1f, 2f, 3f, 5f, 1f, 0f, -1f, -2f, -1f));
+            var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, 0f, -1f, -2f, -1f });
 
             result.Should().HaveCount(3);
             result[0].Should().Be(1f);
@@ -41,10 +40,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_SumPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Sum);
-            layer.Build(9, new ValueStore(), new ValueStore());
+            layer.Build(9);
             layer.NodeCount.Should().Be(3);
 
-            var result = layer.Update(ValueStoreRange.Of(1f, 2f, 3f, 5f, 1f, -2f, -1f, -2f, -1f));
+            var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, -2f, -1f, -2f, -1f });
 
             result.Should().HaveCount(3);
             result[0].Should().Be(6f);
@@ -56,10 +55,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_AvgPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Average);
-            layer.Build(9, new ValueStore(), new ValueStore());
+            layer.Build(9);
             layer.NodeCount.Should().Be(3);
 
-            var result = layer.Update(ValueStoreRange.Of(1f, 2f, 3f, 5f, 1f, -3f, -1f, -2f, -3f));
+            var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, -3f, -1f, -2f, -3f });
 
             result.Should().HaveCount(3);
             result[0].Should().Be(2f);
@@ -74,10 +73,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_LargeWindow(PoolingType type, float input1, float input2, float output)
         {
             var layer = new PoolingLayer(3, 3, type);
-            layer.Build(2, new ValueStore(), new ValueStore());
+            layer.Build(2);
             layer.NodeCount.Should().Be(1);
 
-            var result = layer.Update(ValueStoreRange.Of(input1, input2));
+            var result = layer.Update(new float[] { input1, input2 });
 
             result.Should().HaveCount(1);
             result[0].Should().Be(output);
@@ -90,10 +89,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_DifferentStrideAndWindow(PoolingType type, float[] input, float[] output)
         {
             var layer = new PoolingLayer(3, 2, type);
-            layer.Build(input.Length, new ValueStore(), new ValueStore());
+            layer.Build(input.Length);
             layer.NodeCount.Should().Be(output.Length);
 
-            var result = layer.Update(ValueStoreRange.Of(input));
+            var result = layer.Update(input);
 
             result.Should().HaveCount(output.Length);
             for (int i = 0; i < output.Length; i++)
@@ -110,13 +109,12 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestBuild(int inputSize, int expectedNodeCount)
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Min);
-            var parameters = new ValueStore();
-            var state = new ValueStore();
 
-            layer.Build(inputSize, parameters, state);
+            layer.Build(inputSize);
 
-            parameters.Count.Should().Be(0);
-            state.Count.Should().Be(expectedNodeCount);
+            layer.Parameters.Get1dVectorNames().Should().BeEmpty();
+            layer.Parameters.Get2dVectorNames().Should().BeEmpty();
+            layer.State.Get1dVector("kernels").Should().HaveCount(expectedNodeCount);
             layer.NodeCount.Should().Be(expectedNodeCount);
         }
     }

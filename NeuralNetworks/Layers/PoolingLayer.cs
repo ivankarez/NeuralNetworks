@@ -10,8 +10,10 @@ namespace Ivankarez.NeuralNetworks.Layers
         public int Window { get; }
         public int Stride { get; }
         public PoolingType Type { get; }
+        public NamedVectors<float> Parameters { get; }
+        public NamedVectors<float> State { get; }
 
-        private ValueStoreRange kernels;
+        private float[] kernels;
 
         public PoolingLayer(int window, int stride, PoolingType type)
         {
@@ -22,17 +24,21 @@ namespace Ivankarez.NeuralNetworks.Layers
             Stride = stride;
             Type = type;
             NodeCount = -1;
+
+            Parameters = new NamedVectors<float>();
+            State = new NamedVectors<float>();
         }
 
-        public void Build(int inputSize, ValueStore parameters, ValueStore state)
+        public void Build(int inputSize)
         {
             NodeCount = (int)Math.Ceiling((double)inputSize / Stride);
-            kernels = state.AllocateRange(NodeCount);
+            kernels = new float[NodeCount];
+            State.Add("kernels", kernels);
         }
 
-        public IValueArray Update(IValueArray inputValues)
+        public float[] Update(float[] inputValues)
         {
-            for (int nodeIndex = 0; nodeIndex < kernels.Count; nodeIndex++)
+            for (int nodeIndex = 0; nodeIndex < kernels.Length; nodeIndex++)
             {
                 var startIndex = nodeIndex * Stride;
                 if (Type == PoolingType.Max)
@@ -56,9 +62,9 @@ namespace Ivankarez.NeuralNetworks.Layers
             return kernels;
         }
 
-        private float PoolByMaximum(int start, IValueArray inputValues)
+        private float PoolByMaximum(int start, float[] inputValues)
         {
-            var windowEnd = Math.Min(start + Window, inputValues.Count);
+            var windowEnd = Math.Min(start + Window, inputValues.Length);
             var max = float.NegativeInfinity;
             for (int i = start; i < windowEnd; i++)
             {
@@ -72,9 +78,9 @@ namespace Ivankarez.NeuralNetworks.Layers
             return max;
         }
 
-        private float PoolByMinimum(int start, IValueArray inputValues)
+        private float PoolByMinimum(int start, float[] inputValues)
         {
-            var windowEnd = Math.Min(start + Window, inputValues.Count);
+            var windowEnd = Math.Min(start + Window, inputValues.Length);
             var min = float.PositiveInfinity;
             for (int i = start; i < windowEnd; i++)
             {
@@ -87,15 +93,15 @@ namespace Ivankarez.NeuralNetworks.Layers
             return min;
         }
 
-        private float PoolByAverage(int start, IValueArray inputValues)
+        private float PoolByAverage(int start, float[] inputValues)
         {
-            var windowEnd = Math.Min(start + Window, inputValues.Count);
+            var windowEnd = Math.Min(start + Window, inputValues.Length);
             return PoolBySum(start, inputValues) / (windowEnd - start);
         }
 
-        private float PoolBySum(int start, IValueArray inputValues)
+        private float PoolBySum(int start, float[] inputValues)
         {
-            var windowEnd = Math.Min(start + Window, inputValues.Count);
+            var windowEnd = Math.Min(start + Window, inputValues.Length);
             var sum = 0f;
             for (int i = start; i < windowEnd; i++)
             {

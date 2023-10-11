@@ -6,8 +6,11 @@ namespace Ivankarez.NeuralNetworks.Abstractions
     {
         public int NodeCount { get; }
 
-        public void Build(int inputSize, ValueStore parameters, ValueStore state);
+        public NamedVectors<float> Parameters { get; }
+        public NamedVectors<float> State { get; }
 
-        public IValueArray Update(IValueArray inputValues);
+        public void Build(int inputSize);
+
+        public float[] Update(float[] inputValues);
     }
 }

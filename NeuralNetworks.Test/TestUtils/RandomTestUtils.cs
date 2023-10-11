@@ -1,11 +1,10 @@
-﻿using Ivankarez.NeuralNetworks.Values;
-using System;
+﻿using System;
 
 namespace Ivankarez.NeuralNetworks.Test.TestUtils
 {
     public static class RandomTestUtils
     {
-        public static ValueStore CreateRandomValueStore(int size, int seed)
+        public static float[] CreateRandomFloatArray(int size, int seed)
         {
             var random = new Random(seed);
             var values = new float[size];
@@ -13,7 +12,7 @@ namespace Ivankarez.NeuralNetworks.Test.TestUtils
             {
                 values[i] = (float)random.NextDouble();
             }
-            return new ValueStore(values);
+            return values;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
-using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 
@@ -9,13 +8,16 @@ namespace Ivankarez.NeuralNetworks.Layers
     {
         public int NodeCount { get; }
 
+        public NamedVectors<float> Parameters { get; }
+        public NamedVectors<float> State { get; }
+
         private readonly IActivation activation;
         private readonly bool useBias;
 
-        private float[] nodeInputs;
-        private ValueStoreRange[] weights;
-        private ValueStoreRange recurrentWeights;
-        private ValueStoreRange kernels;
+        private float[,] weights;
+        private float[] recurrentWeights;
+        private float[] nodeValues;
+        private float[] biases;
 
         public RecurrentLayer(int nodeCount, IActivation activation, bool useBias)
         {
@@ -25,45 +27,44 @@ namespace Ivankarez.NeuralNetworks.Layers
             NodeCount = nodeCount;
             this.activation = activation;
             this.useBias = useBias;
+            Parameters = new NamedVectors<float>();
+            State = new NamedVectors<float>();
         }
 
-        public void Build(int inputSize, ValueStore parameters, ValueStore state)
+        public void Build(int inputSize)
         {
-            var nodeInputSize = useBias ? inputSize + 1 : inputSize;
-            weights = new ValueStoreRange[NodeCount];
-            for (int i = 0; i < NodeCount; i++)
-            {
-                weights[i] = parameters.AllocateRange(nodeInputSize);
-            }
-            recurrentWeights = parameters.AllocateRange(NodeCount);
-            nodeInputs = new float[nodeInputSize + 1];
-            kernels = state.AllocateRange(NodeCount);
+            weights = new float[NodeCount,inputSize];
+            recurrentWeights = new float[NodeCount];
+            biases = new float[useBias ? NodeCount : 0];
+            nodeValues = new float[NodeCount];
+
+            State.Add("nodeValues", nodeValues);
+            Parameters.Add("biases", biases);
+            Parameters.Add("weights", weights);
+            Parameters.Add("recurrentWeights", recurrentWeights);
         }
 
-        public IValueArray Update(IValueArray inputValues)
+        public float[] Update(float[] inputValues)
         {
             for (int nodeIndex = 0; nodeIndex < NodeCount; nodeIndex++)
             {
-                var nodeWeights = weights[nodeIndex];
-                MathUtils.ElementwiseMultiply(inputValues, nodeWeights, nodeInputs);
-                if (useBias)
-                {
-                    SetBiasInput(nodeWeights[^1]);
-                }
-                SetRecurrentInput(kernels[nodeIndex] * recurrentWeights[nodeIndex]);
-                kernels[nodeIndex] = activation.Apply(nodeInputs);
+                UpdateNode(nodeIndex, inputValues);
             }
-            return kernels;
+            return nodeValues;
         }
 
-        private void SetRecurrentInput(float value)
+        private void UpdateNode(int nodeIndex, float[] inputValues)
         {
-            nodeInputs[^1] = value;
-        }
-
-        private void SetBiasInput(float value)
-        {
-            nodeInputs[^2] = value;
+            var nodeValue = recurrentWeights[nodeIndex] * nodeValues[nodeIndex];
+            for (int inputIndex = 0; inputIndex < inputValues.Length; inputIndex++)
+            {
+                nodeValue += inputValues[inputIndex] * weights[nodeIndex, inputIndex];
+            }
+            if (useBias)
+            {
+                nodeValue += biases[nodeIndex];
+            }
+            nodeValues[nodeIndex] = activation.Apply(nodeValue);
         }
     }
 }

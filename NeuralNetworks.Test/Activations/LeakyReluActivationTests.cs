@@ -6,16 +6,14 @@ namespace Ivankarez.NeuralNetworks.Test.Activations
 {
     public class LeakyReluActivationTests
     {
-        [TestCase(new float[] { 0f }, 0f)]
-        [TestCase(new float[] { .5f }, .5f)]
-        [TestCase(new float[] { 1f }, 1f)]
-        [TestCase(new float[] { 10f }, 10f)]
-        [TestCase(new float[] { -0.01f }, -.01f * .1f)]
-        [TestCase(new float[] { -10f }, -10f * .1f)]
-        [TestCase(new float[] { 2f, 3f, -10f }, 4f)]
-        public void TestApply(float[] inputs, float expectedOutput)
+        [TestCase(0f, 0f)]
+        [TestCase(1f, 1f)]
+        [TestCase(2f, 2f)]
+        [TestCase(-1f, -0.1f)]
+        [TestCase(-2f, -0.2f)]
+        public void TestApply(float input, float expectedOutput)
         {
-            var output = new LeakyReluActivation(.1f).Apply(inputs);
+            var output = new LeakyReluActivation(.1f).Apply(input);
             output.Should().Be(expectedOutput);
         }
     }

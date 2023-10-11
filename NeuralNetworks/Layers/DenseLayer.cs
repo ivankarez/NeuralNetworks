@@ -1,5 +1,4 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
-using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 
@@ -8,12 +7,14 @@ namespace Ivankarez.NeuralNetworks.Layers
     public class DenseLayer : IModelLayer
     {
         public int NodeCount { get; }
+        public NamedVectors<float> Parameters { get; }
+        public NamedVectors<float> State { get; }
 
         private readonly IActivation activation;
 
-        private ValueStoreRange[] weights;
-        private ValueStoreRange kernels;
-        private float[] nodeInputs;
+        private float[,] weights;
+        private float[] kernels;
+        private float[] biases;
         private readonly bool useBias;
 
         public DenseLayer(int nodeCount, IActivation activation, bool useBias)
@@ -24,34 +25,43 @@ namespace Ivankarez.NeuralNetworks.Layers
             NodeCount = nodeCount;
             this.activation = activation;
             this.useBias = useBias;
+
+            Parameters = new NamedVectors<float>();
+            State = new NamedVectors<float>();
         }
 
-        public void Build(int inputSize, ValueStore parameters, ValueStore state)
+        public void Build(int inputSize)
         {
-            var nodeInputSize = useBias ? inputSize + 1 : inputSize;
-            weights = new ValueStoreRange[NodeCount];
-            for (int i = 0; i < NodeCount; i++)
-            {
-                weights[i] = parameters.AllocateRange(nodeInputSize);
-            }
-            kernels = state.AllocateRange(NodeCount);
-            nodeInputs = new float[nodeInputSize];
+            weights = new float[NodeCount, inputSize];
+            kernels = new float[NodeCount];
+            biases = new float[useBias ? NodeCount : 0];
+
+            State.Add("kernels", kernels);
+            Parameters.Add("biases", biases);
+            Parameters.Add("weights", weights);
         }
 
-        public IValueArray Update(IValueArray inputValues)
+        public float[] Update(float[] inputValues)
         {
-            var biasIndex = nodeInputs.Length - 1;
             for (int nodeIndex = 0; nodeIndex < NodeCount; nodeIndex++)
             {
-                var nodeWeights = weights[nodeIndex];
-                MathUtils.ElementwiseMultiply(inputValues, nodeWeights, nodeInputs);
-                if (useBias)
-                {
-                    nodeInputs[biasIndex] = nodeWeights[biasIndex];
-                }
-                kernels[nodeIndex] = activation.Apply(nodeInputs);
+                UpdateNode(nodeIndex, inputValues);
             }
             return kernels;
+        }
+
+        private void UpdateNode(int nodeIndex, float[] inputValues)
+        {
+            var nodeValue = 0f;
+            for (int inputIndex = 0; inputIndex < inputValues.Length; inputIndex++)
+            {
+                nodeValue += inputValues[inputIndex] * weights[nodeIndex, inputIndex];
+            }
+            if (useBias)
+            {
+                nodeValue += biases[nodeIndex];
+            }
+            kernels[nodeIndex] = activation.Apply(nodeValue);
         }
     }
 }
