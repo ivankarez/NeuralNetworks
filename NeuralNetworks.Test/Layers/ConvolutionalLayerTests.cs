@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Layers;
-using Ivankarez.NeuralNetworks.Values;
+using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
 using System;
 
@@ -12,23 +12,19 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestBuild_HappyPath()
         {
             var layer = new ConvolutionalLayer(3);
-            var parameters = new ValueStore();
-            var state = new ValueStore();
 
-            layer.Build(3, parameters, state);
+            layer.Build(3);
 
-            parameters.Values.Should().HaveCount(3);
-            state.Values.Should().HaveCount(1);
+            layer.Parameters.Get1dVector("filter").Should().HaveCount(3);
+            layer.State.Get1dVector("kernels").Should().HaveCount(1);
         }
 
         [Test]
         public void TestBuild_TooBigFilter()
         {
             var layer = new ConvolutionalLayer(4);
-            var parameters = new ValueStore();
-            var state = new ValueStore();
 
-            Action callAction = () => layer.Build(3, parameters, state);
+            Action callAction = () => layer.Build(3);
 
             callAction.Should().Throw<ArgumentException>();
         }
@@ -44,11 +40,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_SingleKernel()
         {
             var layer = new ConvolutionalLayer(3);
-            var parameters = new ValueStore(new float[] { 1, 2, -1 });
-            var state = new ValueStore();
-            layer.Build(3, parameters, state);
+            layer.Build(3);
+            layer.Parameters.Get1dVector("filter").Fill(1, 2, -1 );
 
-            var result = layer.Update(ValueStoreRange.Of(3, -5, -4));
+            var result = layer.Update(new float[] { 3, -5, -4 });
 
             result.Should().HaveCount(1);
             result[0].Should().Be(-3);
@@ -58,11 +53,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_MultipleKernel()
         {
             var layer = new ConvolutionalLayer(2);
-            var parameters = new ValueStore(new float[] { 1, -2 });
-            var state = new ValueStore();
-            layer.Build(6, parameters, state);
+            layer.Build(6);
+            layer.Parameters.Get1dVector("filter").Fill(1, -2 );
 
-            var result = layer.Update(ValueStoreRange.Of(3, -5, -4, 2, 3, 1));
+            var result = layer.Update(new float[] { 3, -5, -4, 2, 3, 1 });
 
             result.Should().HaveCount(5);
             result[0].Should().Be(13);
@@ -76,11 +70,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_ShortestFilter()
         {
             var layer = new ConvolutionalLayer(1);
-            var parameters = new ValueStore(new float[] { .5f });
-            var state = new ValueStore();
-            layer.Build(3, parameters, state);
+            layer.Build(3);
+            layer.Parameters.Get1dVector("filter").Fill(.5f );
 
-            var result = layer.Update(ValueStoreRange.Of(3, -5, 0));
+            var result = layer.Update(new float[] { 3, -5, 0 });
 
             result.Should().HaveCount(3);
             result[0].Should().Be(1.5f);

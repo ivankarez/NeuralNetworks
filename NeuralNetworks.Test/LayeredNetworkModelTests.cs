@@ -21,25 +21,6 @@ namespace Ivankarez.NeuralNetworks.Test
             result[1].Should().BeApproximately(.4030f, 0.001f);
         }
 
-        [Test]
-        public void TestFeedforward_CopyParameters()
-        {
-            var model1 = CreateTestModel();
-            Randomize(model1);
-
-            var model2 = CreateTestModel();
-            for (int i = 0; i < model1.Parameters.Count; i++)
-            {
-                model2.Parameters.Values[i] = model1.Parameters.Values[i];
-            }
-
-            var inputs = new float[] { .12f };
-            var result1 = model1.Feedforward(inputs);
-            var result2 = model2.Feedforward(inputs);
-
-            result2.Should().BeEquivalentTo(result1);
-        }
-
         private static LayeredNetworkModel CreateTestModel()
         {
             var activation = new LinearActivation();
@@ -51,9 +32,27 @@ namespace Ivankarez.NeuralNetworks.Test
         private static void Randomize(LayeredNetworkModel model)
         {
             var random = new Random(0);
-            for (int i = 0; i < model.Parameters.Count; i++)
+            foreach (var layer in model.Layers)
             {
-                model.Parameters.Values[i] = (float)(random.NextDouble() * 2 - 1);
+                foreach (var vector1dName in layer.Parameters.Get1dVectorNames())
+                {
+                    var vector = layer.Parameters.Get1dVector(vector1dName);
+                    for (int i = 0; i < vector.Length; i++)
+                    {
+                        vector[i] = (float)(random.NextDouble() * 2 - 1);
+                    }
+                }
+                foreach (var vector2dName in layer.Parameters.Get2dVectorNames())
+                {
+                    var vector = layer.Parameters.Get2dVector(vector2dName);
+                    for (int i = 0; i < vector.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < vector.GetLength(1); j++)
+                        {
+                            vector[i, j] = (float)(random.NextDouble() * 2 - 1);
+                        }
+                    }
+                }
             }
         }
     }

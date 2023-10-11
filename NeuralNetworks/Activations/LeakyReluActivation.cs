@@ -10,21 +10,14 @@ namespace Ivankarez.NeuralNetworks.Activations
             this.alpha = alpha;
         }
 
-        public float Apply(float[] inputs)
+        public float Apply(float input)
         {
-            var sum = 0f;
-            for (int i = 0; i < inputs.Length; i++)
+            if (input < 0)
             {
-                if (inputs[i] > 0f)
-                {
-                    sum += inputs[i];
-                }
-                else
-                {
-                    sum += inputs[i] * alpha;
-                }
+                return alpha * input;
             }
-            return sum;
+
+            return input;
         }
     }
 }

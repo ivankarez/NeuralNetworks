@@ -4,18 +4,9 @@ namespace Ivankarez.NeuralNetworks.Activations
 {
     public class ReluActivation : IActivation
     {
-        public float Apply(float[] inputs)
+        public float Apply(float input)
         {
-            var sum = 0f;
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                if (inputs[i] > 0f)
-                {
-                    sum += inputs[i];
-                }
-            }
-
-            return sum;
+            return input > 0f ? input : 0f;
         }
     }
 }

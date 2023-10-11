@@ -2,6 +2,6 @@
 {
     public interface IActivation
     {
-        public float Apply(float[] inputs);
+        public float Apply(float input);
     }
 }

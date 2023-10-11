@@ -18,13 +18,11 @@ namespace Ivankarez.NeuralNetworks.Activations
             Max = max;
         }
 
-        public float Apply(float[] inputs)
+        public float Apply(float input)
         {
-            var value = internalActivation.Apply(inputs);
-
-            if (value > Max) return Max;
-            if (value < Min) return Min;
-            return value;
+            if (input > Max) return Max;
+            if (input < Min) return Min;
+            return input;
         }
     }
 }
