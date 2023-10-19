@@ -16,7 +16,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             layer.Build(3);
 
             layer.Parameters.Get1dVector("filter").Should().HaveCount(3);
-            layer.State.Get1dVector("kernels").Should().HaveCount(1);
+            layer.State.Get1dVector("nodeValues").Should().HaveCount(1);
         }
 
         [Test]

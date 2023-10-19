@@ -13,7 +13,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         private readonly IActivation activation;
 
         private float[,] weights;
-        private float[] kernels;
+        private float[] nodeValues;
         private float[] biases;
         private readonly bool useBias;
 
@@ -33,10 +33,10 @@ namespace Ivankarez.NeuralNetworks.Layers
         public void Build(int inputSize)
         {
             weights = new float[NodeCount, inputSize];
-            kernels = new float[NodeCount];
+            nodeValues = new float[NodeCount];
             biases = new float[useBias ? NodeCount : 0];
 
-            State.Add("kernels", kernels);
+            State.Add("nodeValues", nodeValues);
             Parameters.Add("biases", biases);
             Parameters.Add("weights", weights);
         }
@@ -47,7 +47,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 UpdateNode(nodeIndex, inputValues);
             }
-            return kernels;
+            return nodeValues;
         }
 
         private void UpdateNode(int nodeIndex, float[] inputValues)
@@ -61,7 +61,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 nodeValue += biases[nodeIndex];
             }
-            kernels[nodeIndex] = activation.Apply(nodeValue);
+            nodeValues[nodeIndex] = activation.Apply(nodeValue);
         }
     }
 }

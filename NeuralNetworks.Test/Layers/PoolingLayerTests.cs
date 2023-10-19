@@ -114,7 +114,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
 
             layer.Parameters.Get1dVectorNames().Should().BeEmpty();
             layer.Parameters.Get2dVectorNames().Should().BeEmpty();
-            layer.State.Get1dVector("kernels").Should().HaveCount(expectedNodeCount);
+            layer.State.Get1dVector("nodeValues").Should().HaveCount(expectedNodeCount);
             layer.NodeCount.Should().Be(expectedNodeCount);
         }
     }

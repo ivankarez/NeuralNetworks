@@ -11,7 +11,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
 
-        private float[] kernels;
+        private float[] nodeValues;
         private float[] filter;
 
         public ConvolutionalLayer(int filterSize)
@@ -29,10 +29,10 @@ namespace Ivankarez.NeuralNetworks.Layers
             NodeCount = inputSize - FilterSize + 1;
             if (NodeCount < 1) throw new ArgumentException("filterSize cannot be less than the size of the previous layer", nameof(inputSize));
 
-            kernels = new float[NodeCount];
+            nodeValues = new float[NodeCount];
             filter = new float[FilterSize];
 
-            State.Add("kernels", kernels);
+            State.Add("nodeValues", nodeValues);
             Parameters.Add("filter", filter);
         }
 
@@ -40,10 +40,10 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             for (int kernelIndex = 0; kernelIndex < NodeCount; kernelIndex++)
             {
-                kernels[kernelIndex] = DotProductWithFilter(inputValues, kernelIndex);
+                nodeValues[kernelIndex] = DotProductWithFilter(inputValues, kernelIndex);
             }
 
-            return kernels;
+            return nodeValues;
         }
 
         private float DotProductWithFilter(float[] inputValue, int windowStart)

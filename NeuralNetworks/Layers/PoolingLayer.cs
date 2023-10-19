@@ -13,7 +13,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
 
-        private float[] kernels;
+        private float[] nodeValues;
 
         public PoolingLayer(int window, int stride, PoolingType type)
         {
@@ -32,34 +32,34 @@ namespace Ivankarez.NeuralNetworks.Layers
         public void Build(int inputSize)
         {
             NodeCount = (int)Math.Ceiling((double)inputSize / Stride);
-            kernels = new float[NodeCount];
-            State.Add("kernels", kernels);
+            nodeValues = new float[NodeCount];
+            State.Add("nodeValues", nodeValues);
         }
 
         public float[] Update(float[] inputValues)
         {
-            for (int nodeIndex = 0; nodeIndex < kernels.Length; nodeIndex++)
+            for (int nodeIndex = 0; nodeIndex < nodeValues.Length; nodeIndex++)
             {
                 var startIndex = nodeIndex * Stride;
                 if (Type == PoolingType.Max)
                 {
-                    kernels[nodeIndex] = PoolByMaximum(startIndex, inputValues);
+                    nodeValues[nodeIndex] = PoolByMaximum(startIndex, inputValues);
                 }
                 else if (Type == PoolingType.Average)
                 {
-                    kernels[nodeIndex] = PoolByAverage(startIndex, inputValues);
+                    nodeValues[nodeIndex] = PoolByAverage(startIndex, inputValues);
                 }
                 else if (Type == PoolingType.Min)
                 {
-                    kernels[nodeIndex] = PoolByMinimum(startIndex, inputValues);
+                    nodeValues[nodeIndex] = PoolByMinimum(startIndex, inputValues);
                 }
                 else if (Type == PoolingType.Sum)
                 {
-                    kernels[nodeIndex] = PoolBySum(startIndex, inputValues);
+                    nodeValues[nodeIndex] = PoolBySum(startIndex, inputValues);
                 }
             }
 
-            return kernels;
+            return nodeValues;
         }
 
         private float PoolByMaximum(int start, float[] inputValues)
