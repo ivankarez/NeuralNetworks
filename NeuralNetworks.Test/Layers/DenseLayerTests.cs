@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Activations;
 using Ivankarez.NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
 
@@ -11,9 +12,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_HappyPath()
         {
-            var layer = new DenseLayer(2, new LinearActivation(), false);
+            var initializer = new ZerosInitializer();
+            var layer = new DenseLayer(2, new LinearActivation(), false, initializer, initializer);
             layer.Build(1);
-            layer.Parameters.Get2dVector("weights").Fill( new float[,] { { -1f }, { 2.3f } });
+            layer.Parameters.Get2dVector("weights").Fill(new float[,] { { -1f }, { 2.3f } });
 
             var result = layer.Update(new float[] { 2f });
 
@@ -25,7 +27,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_HappyPath2()
         {
-            var layer = new DenseLayer(3, new LinearActivation(), false);
+            var initializer = new ZerosInitializer();
+            var layer = new DenseLayer(3, new LinearActivation(), false, initializer, initializer);
             layer.Build(2);
             layer.Parameters.Get2dVector("weights").Fill(new float[,] { { -1f, 2.3f }, { 1.34f, .5f }, { -.34f, .2f } });
 
@@ -40,7 +43,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_WithBias()
         {
-            var layer = new DenseLayer(2, new LinearActivation(), true);
+            var initializer = new ZerosInitializer();
+            var layer = new DenseLayer(2, new LinearActivation(), true, initializer, initializer);
             layer.Build(1);
             layer.Parameters.Get1dVector("biases").Fill(.5f, -.23f);
 
@@ -49,6 +53,25 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             result.Should().HaveCount(2);
             result[0].Should().Be(.5f);
             result[1].Should().Be(-.23f);
+        }
+
+        [Test]
+        public void TestBuild_UseInitializers()
+        {
+            var kernelInitializer = new ConstantInitializer(1);
+            var biasInitializer = new ConstantInitializer(2);
+            var layer = new DenseLayer(2, new LinearActivation(), true, kernelInitializer, biasInitializer);
+            layer.Build(10);
+
+            var weights = layer.Parameters.Get2dVector("weights");
+            for (int x = 0; x < weights.GetLength(0); x++)
+            {
+                for (int y = 0; y < weights.GetLength(1); y++) {
+                    weights[x, y].Should().Be(1);
+                }
+            }
+
+            layer.Parameters.Get1dVector("biases").Should().OnlyContain(v => v == 2);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Activations;
 using Ivankarez.NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using NUnit.Framework;
 using System;
 
@@ -24,8 +25,9 @@ namespace Ivankarez.NeuralNetworks.Test
         private static LayeredNetworkModel CreateTestModel()
         {
             var activation = new LinearActivation();
-            var layer1 = new DenseLayer(3, activation, false);
-            var layer2 = new DenseLayer(2, activation, false);
+            var initializer = new ZerosInitializer();
+            var layer1 = new DenseLayer(3, activation, false, initializer, initializer);
+            var layer2 = new DenseLayer(2, activation, false, initializer, initializer);
             return new LayeredNetworkModel(1, layer1, layer2);
         }
 
