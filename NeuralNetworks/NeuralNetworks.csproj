@@ -7,4 +7,10 @@
     <RootNamespace>Ivankarez.NeuralNetworks</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Extensions\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <None Remove="Extensions\**" />
+  </ItemGroup>
+
 </Project>
