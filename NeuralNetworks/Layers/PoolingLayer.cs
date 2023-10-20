@@ -1,4 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 
@@ -109,13 +110,5 @@ namespace Ivankarez.NeuralNetworks.Layers
             }
             return sum;
         }
-    }
-
-    public enum PoolingType
-    {
-        Max,
-        Average,
-        Min,
-        Sum
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 

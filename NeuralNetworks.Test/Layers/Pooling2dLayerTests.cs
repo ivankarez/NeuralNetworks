@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
 using System;
 
