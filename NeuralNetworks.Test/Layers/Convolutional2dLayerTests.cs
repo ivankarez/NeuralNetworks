@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using Ivankarez.NeuralNetworks.Test.TestUtils;
 using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
@@ -12,7 +13,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Build_WithInvalidInputSize_ThrowsArgumentException()
         {
-            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1);
+            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1, new ZerosInitializer());
             Action testAction = () => layer.Build(4);
             testAction.Should().Throw<ArgumentException>();
         }
@@ -20,7 +21,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Build_WithValidInputSize_SetsNodeCount()
         {
-            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1);
+            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1, new ZerosInitializer());
             layer.Build(9);
             layer.NodeCount.Should().Be(4);
         }
@@ -28,7 +29,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Build_WithValidInputSize_SetsNodeValues()
         {
-            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1);
+            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1, new ZerosInitializer());
             layer.Build(9);
             layer.State.Get1dVector("nodeValues").Should().HaveCount(4);
         }
@@ -36,7 +37,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Update_WithZeros()
         {
-            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1);
+            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1, new ZerosInitializer());
             layer.Build(9);
             var output = layer.Update(new float[9]);
             output.Should().OnlyContain(v => v == 0);
@@ -45,7 +46,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Update_WithData()
         {
-            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1);
+            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1, new ZerosInitializer());
             layer.Build(9);
 
             layer.Parameters.Get2dVector("filter").Fill(new float[,] { { -1, 2, }, { -2, 3 } });
@@ -58,7 +59,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Update_WithData2()
         {
-            var layer = new Convolutional2dLayer(3, 3, 3, 3, 1, 1);
+            var layer = new Convolutional2dLayer(3, 3, 3, 3, 1, 1, new ZerosInitializer());
             layer.Build(9);
 
             layer.Parameters.Get2dVector("filter").Fill(new float[,] { { 1, 1, 1 }, { 2, 2, 2 }, { 3, 3, 3 } });
@@ -71,7 +72,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Update_WithData_LargerInput()
         {
-            var layer = new Convolutional2dLayer(90, 90, 11, 11, 5, 5);
+            var layer = new Convolutional2dLayer(90, 90, 11, 11, 5, 5, new ZerosInitializer());
             layer.Build(90 * 90);
 
             var filter = RandomTestUtils.CreateRandomFloatMatrix(11, 11, 0);

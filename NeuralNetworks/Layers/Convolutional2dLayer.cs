@@ -1,4 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
+using Ivankarez.NeuralNetworks.RandomGeneration;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 
@@ -15,13 +16,14 @@ namespace Ivankarez.NeuralNetworks.Layers
         public int FilterHeigth { get; }
         public int StrideX { get; }
         public int StrideY { get; }
+        public IInitializer KernelInitializer { get; }
 
         private float[] nodeValues;
         private float[,] filter;
         private int nodeValuesWidth;
         private int nodeValuesHeight;
 
-        public Convolutional2dLayer(int inputWidth, int inputHeight, int filterWidth, int filterHeigth, int strideX, int strideY)
+        public Convolutional2dLayer(int inputWidth, int inputHeight, int filterWidth, int filterHeigth, int strideX, int strideY, IInitializer kernelInitializer)
         {
             if (inputWidth < 1) throw new ArgumentException("Input width must be greater than 0", nameof(inputWidth));
             if (inputHeight < 1) throw new ArgumentException("Input height must be greater than 0", nameof(inputHeight));
@@ -29,6 +31,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             if (filterHeigth < 2) throw new ArgumentException("Filter height must be greater than 1", nameof(filterHeigth));
             if (strideX < 1) throw new ArgumentException("Stride X must be greater than 0", nameof(strideX));
             if (strideY < 1) throw new ArgumentException("Stride Y must be greater than 0", nameof(strideY));
+            if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
 
             if (filterWidth > inputWidth) throw new ArgumentException("Filter width cannot be greater than input width", nameof(filterWidth));
             if (filterHeigth > inputHeight) throw new ArgumentException("Filter height cannot be greater than input height", nameof(filterHeigth));
@@ -41,6 +44,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             FilterHeigth = filterHeigth;
             StrideX = strideX;
             StrideY = strideY;
+            KernelInitializer = kernelInitializer;
         }
 
         public void Build(int inputSize)
@@ -52,7 +56,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             nodeValuesHeight = (InputHeight - FilterHeigth) / StrideY + 1;
             NodeCount = nodeValuesWidth * nodeValuesHeight;
             nodeValues = new float[NodeCount];
-            filter = new float[FilterWidth, FilterHeigth];
+            filter = KernelInitializer.GenerateValues2d(inputSize, NodeCount, FilterWidth, FilterHeigth);
 
             State.Add("nodeValues", nodeValues);
             Parameters.Add("filter", filter);

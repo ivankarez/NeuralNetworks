@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
 using System;
@@ -11,7 +12,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestBuild_HappyPath()
         {
-            var layer = new ConvolutionalLayer(3);
+            var layer = new ConvolutionalLayer(3, new ZerosInitializer());
 
             layer.Build(3);
 
@@ -22,7 +23,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestBuild_TooBigFilter()
         {
-            var layer = new ConvolutionalLayer(4);
+            var layer = new ConvolutionalLayer(4, new ZerosInitializer());
 
             Action callAction = () => layer.Build(3);
 
@@ -32,14 +33,14 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestBuild_TooSmallFilter()
         {
-            Action callAction = () => new ConvolutionalLayer(0);
+            Action callAction = () => new ConvolutionalLayer(0, new ZerosInitializer());
             callAction.Should().Throw<ArgumentException>();
         }
 
         [Test]
         public void TestUpdate_SingleKernel()
         {
-            var layer = new ConvolutionalLayer(3);
+            var layer = new ConvolutionalLayer(3, new ZerosInitializer());
             layer.Build(3);
             layer.Parameters.Get1dVector("filter").Fill(1, 2, -1 );
 
@@ -52,7 +53,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_MultipleKernel()
         {
-            var layer = new ConvolutionalLayer(2);
+            var layer = new ConvolutionalLayer(2, new ZerosInitializer());
             layer.Build(6);
             layer.Parameters.Get1dVector("filter").Fill(1, -2 );
 
@@ -69,7 +70,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_ShortestFilter()
         {
-            var layer = new ConvolutionalLayer(1);
+            var layer = new ConvolutionalLayer(1, new ZerosInitializer());
             layer.Build(3);
             layer.Parameters.Get1dVector("filter").Fill(.5f );
 
