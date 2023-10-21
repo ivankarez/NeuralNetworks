@@ -21,6 +21,14 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         }
 
         [Test]
+        public void TestBuild_UseInitializer()
+        {
+            var layer = new ConvolutionalLayer(3, new ConstantInitializer(3f));
+            layer.Build(3);
+            layer.Parameters.Get1dVector("filter").Should().AllBeEquivalentTo(3);
+        }
+
+        [Test]
         public void TestBuild_TooBigFilter()
         {
             var layer = new ConvolutionalLayer(4, new ZerosInitializer());

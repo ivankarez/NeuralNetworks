@@ -27,6 +27,14 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         }
 
         [Test]
+        public void Build_UseInitializer()
+        {
+            var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1, new ConstantInitializer(3f));
+            layer.Build(9);
+            layer.Parameters.Get2dVector("filter").Should().BeEquivalentTo(new float[,] { { 3, 3 }, { 3, 3 } });
+        }
+
+        [Test]
         public void Build_WithValidInputSize_SetsNodeValues()
         {
             var layer = new Convolutional2dLayer(3, 3, 2, 2, 1, 1, new ZerosInitializer());
