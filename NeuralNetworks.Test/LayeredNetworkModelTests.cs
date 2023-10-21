@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
-using Ivankarez.NeuralNetworks.Activations;
-using Ivankarez.NeuralNetworks.Layers;
-using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
+using Ivankarez.NeuralNetworks.Api;
+using Ivankarez.NeuralNetworks.RandomGeneration;
 using NUnit.Framework;
 using System;
 
@@ -12,50 +11,19 @@ namespace Ivankarez.NeuralNetworks.Test
         [Test]
         public void TestFeedforward_HappyPath()
         {
-            var model = CreateTestModel();
-            Randomize(model);
+            var inputMatrixSize = 125;
+            var randomProvider = NN.Random.System(new Random(0));
+            var model = NN.Models.Layered(125 * 125,
+                    NN.Layers.Conv2D(125, 125, 5, 5, 1, 1, NN.Initializers.GlorotNormal(randomProvider)),
+                    NN.Layers.Pooling2D(121, 121, 10, 10, 10, 10),
+                    NN.Layers.Dense(12*12, useBias: false, kernelInitializer: NN.Initializers.GlorotUniform(randomProvider)),
+                    NN.Layers.SimpleRecurrent(10, useBias: false, kernelInitializer: NN.Initializers.Normal(randomProvider: randomProvider)),
+                    NN.Layers.Dense(3, kernelInitializer: NN.Initializers.Uniform(randomProvider: randomProvider), biasInitializer: NN.Initializers.Zeros())
+                );
 
-            var result = model.Feedforward(new float[] { .5f });
+            var result = model.Feedforward(randomProvider.NextFloats(0, 1, inputMatrixSize * inputMatrixSize));
 
-            result.Should().HaveCount(2);
-            result[0].Should().BeApproximately(-.1286f, 0.001f);
-            result[1].Should().BeApproximately(.4030f, 0.001f);
-        }
-
-        private static LayeredNetworkModel CreateTestModel()
-        {
-            var activation = new LinearActivation();
-            var initializer = new ZerosInitializer();
-            var layer1 = new DenseLayer(3, activation, false, initializer, initializer);
-            var layer2 = new DenseLayer(2, activation, false, initializer, initializer);
-            return new LayeredNetworkModel(1, layer1, layer2);
-        }
-
-        private static void Randomize(LayeredNetworkModel model)
-        {
-            var random = new Random(0);
-            foreach (var layer in model.Layers)
-            {
-                foreach (var vector1dName in layer.Parameters.Get1dVectorNames())
-                {
-                    var vector = layer.Parameters.Get1dVector(vector1dName);
-                    for (int i = 0; i < vector.Length; i++)
-                    {
-                        vector[i] = (float)(random.NextDouble() * 2 - 1);
-                    }
-                }
-                foreach (var vector2dName in layer.Parameters.Get2dVectorNames())
-                {
-                    var vector = layer.Parameters.Get2dVector(vector2dName);
-                    for (int i = 0; i < vector.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < vector.GetLength(1); j++)
-                        {
-                            vector[i, j] = (float)(random.NextDouble() * 2 - 1);
-                        }
-                    }
-                }
-            }
+            result.Should().BeEquivalentTo(new float[] { 0.8542598f, 0.113805376f, 0.8348296f });
         }
     }
 }
