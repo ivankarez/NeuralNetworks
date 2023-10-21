@@ -1,33 +1,64 @@
 # NeuralNetworks
+Introducing a lightweight and specialized neural network library for C#, meticulously designed to complement evolutionary algorithms. Our library is optimized for the crucial task of computing forward passes within neural networks, without the overhead of built-in backpropagation or conventional learning algorithms.
 
-A small and basic neural network library optimized for use with evolutionary algorithms.
+## Key Features:
+- Efficiency and Memory Optimization: Our neural network library prioritizes resource efficiency, minimizing memory usage and allocations. It achieves this by utilizing C# float arrays for inputs and outputs, while intelligently reusing arrays to enhance performance across successive passes.
+- Keras like API for a familiar interface.
+- No extra dependencies. Makes it easy to drop it into your Unity or C# project as a single DLL file.
 
+## Getting Started
+### Basic Usage
+Creating a simple neural network with dense layers should be very similar if you are familiar with keras. You can reach all the functionality through the `NN` class from the `Ivankarez.NeuralNetworks.Api` namespace. This is the base class to declare your network. The NN api provides an easy way to access the capabilities of the library. You can use `NN.Layers` to create new layers, `NN.Activations` to access activation functions and so on. More of this in the [Features](#features) section.
 
-## Basic usage
-The _inputs_ and _outputs_ of the model are strictly float arrays. You can declare models by using the constructor of the `LayeredNetworkModel` type.
-
-The first parameter is the size of the input array. After that you can add as many layers as you like. The size of the last layer will determine the size of the output array.
-
+Sample code to create layered model with 3 dense layers. The node count of the last layer will determine the output size of the network. In this example we create a network with this configuration:
+ - An input of size 3
+ - A dense layer with 10 neurons
+ - A dense layer with 3 neurons, using the Tanh activation
+ - A dense layer with 2 neurons. Since this is the last layer, it means this network will have an output size of 2.
 ```C#
-var activation = new LinearActivation();
-var layer1 = new DenseLayer(3, activation, false);
-var layer2 = new DenseLayer(2, activation, false);
-var myModel = new LayeredNetworkModel(1, layer1, layer2);
-```
----
-You can run the model by calling the `Predict` function on it.
-```C#
-var result = myModel.Predict(new float[] { .1f });
-```
-**Important**: The model will re-use the same result array on the next run.
+using Ivankarez.NeuralNetworks.Api;
 
-## Configuring
-The `LayeredNetworkModel` has a `Parameters` property to store it's configuration. You can randomize the model by randomizing this collection.
+var neuralNetwork = NN.Models.Layered(3,
+        NN.Layers.Dense(10),
+        NN.Layers.Dense(3, activation: NN.Activations.Tanh()),
+        NN.Layers.Dense(2));
 
-You can also use this `Parameters` collection to save your model config or load it back.
-```C#
-for (int i = 0; i < myModel.Parameters.Count; i++)
-{
-    myModel.Parameters.Values[i] = /* Some random float */;
-}
+var result = neuralNetwork.FeedForward(new float[] {1, 2, 3});
+Console.WriteLine($"Result: {string.Join(", ", result)}");
 ```
+
+### Demo Programs
+- Character classification trained with simple evolution: TODO
+
+## Features
+This is a simple list of available features of this package. If you look for available parameters or default values, you can take a look at the corresponding API codes linked in the section headers.
+
+### [Models](https://github.com/ivankarez/NeuralNetworks/blob/main/NeuralNetworks/Api/ModelsApi.cs)
+- Layered Model
+
+### [Layers](https://github.com/ivankarez/NeuralNetworks/blob/main/NeuralNetworks/Api/LayersApi.cs)
+- Dense Layer
+- Simple Recurrent Layer
+- 1 dim convolution layer
+- 2 dim convolution layer
+- 1 dim pooling layer (min, max, average, sum)
+- 2 dim pooling layer (min, max, average, sum)
+
+### [Activations](https://github.com/ivankarez/NeuralNetworks/blob/main/NeuralNetworks/Api/ActivationsApi.cs)
+- Linear
+- Clamped linear
+- Tanh
+- Sigmoid
+- Relu
+- Leaky Relu
+
+### [Initializers](https://github.com/ivankarez/NeuralNetworks/blob/main/NeuralNetworks/Api/InitializersApi.cs)
+- Zeros
+- Constant
+- Uniform
+- Normal
+- Glorot uniform
+- Glorot normal
+
+## Contributions
+All contributions are welcome. For a starting point it's quite easy to implement other activation functions and initializers. Also extending test coverage, or simplify tests can be a good starting point.
