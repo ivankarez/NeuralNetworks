@@ -5,18 +5,18 @@ namespace Ivankarez.NeuralNetworks.RandomGeneration
 {
     public class SystemRandomProvider : IRandomProvider
     {
-        private readonly Random random;
+        public Random Random { get; }
 
         public SystemRandomProvider(Random random)
         {
             if (random == null) throw new ArgumentNullException(nameof(random));
 
-            this.random = random;
+            Random = random;
         }
 
         public float NextFloat()
         {
-            return (float)random.NextDouble();
+            return (float)Random.NextDouble();
         }
     }
 }

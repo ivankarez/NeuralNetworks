@@ -2,7 +2,7 @@
 
 namespace Ivankarez.NeuralNetworks.RandomGeneration.Initializers
 {
-    internal class UniformInitializer : IInitializer
+    public class UniformInitializer : IInitializer
     {
         public IRandomProvider RandomProvider { get; }
         public float Min { get; }

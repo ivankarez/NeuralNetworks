@@ -1,10 +1,6 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
-using Ivankarez.NeuralNetworks.Activations;
 using Ivankarez.NeuralNetworks.Layers;
-using Ivankarez.NeuralNetworks.RandomGeneration;
-using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using Ivankarez.NeuralNetworks.Utils;
-using System;
 
 namespace Ivankarez.NeuralNetworks.Api
 {
@@ -24,9 +20,9 @@ namespace Ivankarez.NeuralNetworks.Api
         public DenseLayer Dense(int nodeCount, IActivation activation = null, bool useBias = true,
             IInitializer kernelInitializer = null, IInitializer biasInitializer = null)
         {
-            activation ??= new SigmoidActivation();
-            kernelInitializer ??= new GlorotUniformInitializer(new SystemRandomProvider(new Random()));
-            biasInitializer ??= new ZerosInitializer();
+            activation ??= NN.Activations.Sigmoid();
+            kernelInitializer ??= NN.Initializers.GlorotUniform();
+            biasInitializer ??= NN.Initializers.Zeros();
 
             return new DenseLayer(nodeCount, activation, useBias, kernelInitializer, biasInitializer);
         }
@@ -44,10 +40,10 @@ namespace Ivankarez.NeuralNetworks.Api
         public RecurrentLayer SimpleRecurrent(int nodeCount, IActivation activation = null, bool useBias = true,
             IInitializer kernelInitializer = null, IInitializer biasInitializer = null, IInitializer recurrentInitializer = null)
         {
-            activation ??= new SigmoidActivation();
-            kernelInitializer ??= new GlorotUniformInitializer(new SystemRandomProvider(new Random()));
-            biasInitializer ??= new ZerosInitializer();
-            recurrentInitializer ??= new GlorotUniformInitializer(new SystemRandomProvider(new Random()));
+            activation ??= NN.Activations.Sigmoid();
+            kernelInitializer ??= NN.Initializers.GlorotUniform();
+            biasInitializer ??= NN.Initializers.Zeros();
+            recurrentInitializer ??= NN.Initializers.GlorotUniform();
 
             return new RecurrentLayer(nodeCount, activation, useBias, kernelInitializer, biasInitializer, recurrentInitializer);
         }
@@ -60,7 +56,7 @@ namespace Ivankarez.NeuralNetworks.Api
         /// <returns>A 1D Convolutional Layer instance configured with the specified parameters.</returns>
         public ConvolutionalLayer Conv1D(int filterSize, IInitializer kernelInitializer = null)
         {
-            kernelInitializer ??= new GlorotUniformInitializer(new SystemRandomProvider(new Random()));
+            kernelInitializer ??= NN.Initializers.GlorotUniform();
 
             return new ConvolutionalLayer(filterSize, kernelInitializer);
         }
@@ -79,7 +75,7 @@ namespace Ivankarez.NeuralNetworks.Api
         public Convolutional2dLayer Conv2D(int inputWidth, int inputHeight, int filterWidth, int filterHeight,
             int strideX = 1, int strideY = 1, IInitializer kernelInitializer = null)
         {
-            kernelInitializer ??= new GlorotUniformInitializer(new SystemRandomProvider(new Random()));
+            kernelInitializer ??= NN.Initializers.GlorotUniform();
 
             return new Convolutional2dLayer(inputWidth, inputHeight, filterWidth, filterHeight, strideX, strideY, kernelInitializer);
         }
