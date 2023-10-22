@@ -2,15 +2,39 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Authors>K�roly Iv�n</Authors>
-    <Version>2.1</Version>
+    <Authors>Károly Iván</Authors>
+    <Version>4.0.0</Version>
     <RootNamespace>Ivankarez.NeuralNetworks</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>Ivankarez.NeuralNetworks</PackageId>
+    <Title>Neural Networks</Title>
+    <PackageProjectUrl>https://github.com/ivankarez/NeuralNetworks</PackageProjectUrl>
+    <PackageIcon>NeuralNetworksLogo.png</PackageIcon>
+    <Copyright>Copyright (c) 2023 Iván Károly</Copyright>
+    <Description>Introducing a lightweight and specialized neural network library for C#, meticulously designed to complement evolutionary algorithms.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/ivankarez/NeuralNetworks</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Neural Networks, Machine Learning, Genetic Algorithms, Neuro Evolution, Evolution</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Extensions\**" />
     <EmbeddedResource Remove="Extensions\**" />
     <None Remove="Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\NeuralNetworksLogo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
