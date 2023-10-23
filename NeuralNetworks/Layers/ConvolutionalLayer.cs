@@ -52,11 +52,12 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             for (int kernelIndex = 0; kernelIndex < NodeCount; kernelIndex++)
             {
-                nodeValues[kernelIndex] = DotProductWithFilter(inputValues, kernelIndex);
+                var value = DotProductWithFilter(inputValues, kernelIndex);
                 if (UseBias)
                 {
-                    nodeValues[kernelIndex] += biases[kernelIndex];
+                    value += biases[kernelIndex];
                 }
+                nodeValues[kernelIndex] = value;
             }
 
             return nodeValues;
