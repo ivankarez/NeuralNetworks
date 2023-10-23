@@ -27,6 +27,25 @@ var result = neuralNetwork.FeedForward(new float[] {1, 2, 3});
 Console.WriteLine($"Result: {string.Join(", ", result)}");
 ```
 
+### Acessing paramters
+To access parameters of a network (weights, biases etc...) you can iterate trough the layers of a model, and access it's parameters via the `Parameters` property.
+```C#
+var model = NN.Models.Layered(/*Any model config*/);
+foreach(var layer in model.Layers) {
+        var parameters = layer.Parameters;
+}
+```
+
+If you want just a simple `float[]` of the parameters to store them (or used them as a DNA in a genetic algorithm), you can use the `GetParametersFlat` and `SetParametersFlat` extension methods of the model.
+```C#
+var model = NN.Models.Layered(/*Any model config*/);
+var oldParameters = model.GetParametersFlat();
+var newParameters = /* New parameters as a float array */;
+model.SetParametersFlat(newParameters);
+```
+
+If you just want to count the number of parameters, you can use the `CountParameters()` extension method of the model.
+
 ### Demo Programs
 - Character classification trained with simple evolution: TODO
 
