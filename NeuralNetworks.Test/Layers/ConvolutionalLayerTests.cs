@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Ivankarez.NeuralNetworks.Api;
 using Ivankarez.NeuralNetworks.Layers;
 using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using Ivankarez.NeuralNetworks.Utils;
@@ -12,7 +13,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestBuild_HappyPath()
         {
-            var layer = new ConvolutionalLayer(3, new ZerosInitializer());
+            var layer = new ConvolutionalLayer(3, false, new ZerosInitializer(), new ZerosInitializer());
 
             layer.Build(3);
 
@@ -23,15 +24,16 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestBuild_UseInitializer()
         {
-            var layer = new ConvolutionalLayer(3, new ConstantInitializer(3f));
+            var layer = new ConvolutionalLayer(3, true, new ConstantInitializer(3f), new ConstantInitializer(2f));
             layer.Build(3);
             layer.Parameters.Get1dVector("filter").Should().AllBeEquivalentTo(3);
+            layer.Parameters.Get1dVector("biases").Should().AllBeEquivalentTo(2);
         }
 
         [Test]
         public void TestBuild_TooBigFilter()
         {
-            var layer = new ConvolutionalLayer(4, new ZerosInitializer());
+            var layer = new ConvolutionalLayer(4, false, new ZerosInitializer(), new ZerosInitializer());
 
             Action callAction = () => layer.Build(3);
 
@@ -41,14 +43,14 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestBuild_TooSmallFilter()
         {
-            Action callAction = () => new ConvolutionalLayer(0, new ZerosInitializer());
+            Action callAction = () => new ConvolutionalLayer(0, false, new ZerosInitializer(), new ZerosInitializer());
             callAction.Should().Throw<ArgumentException>();
         }
 
         [Test]
         public void TestUpdate_SingleKernel()
         {
-            var layer = new ConvolutionalLayer(3, new ZerosInitializer());
+            var layer = new ConvolutionalLayer(3, false, new ZerosInitializer(), new ZerosInitializer());
             layer.Build(3);
             layer.Parameters.Get1dVector("filter").Fill(1, 2, -1 );
 
@@ -61,7 +63,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_MultipleKernel()
         {
-            var layer = new ConvolutionalLayer(2, new ZerosInitializer());
+            var layer = new ConvolutionalLayer(2, false, new ZerosInitializer(), new ZerosInitializer());
             layer.Build(6);
             layer.Parameters.Get1dVector("filter").Fill(1, -2 );
 
@@ -78,7 +80,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_ShortestFilter()
         {
-            var layer = new ConvolutionalLayer(1, new ZerosInitializer());
+            var layer = new ConvolutionalLayer(1, false, new ZerosInitializer(), new ZerosInitializer());
             layer.Build(3);
             layer.Parameters.Get1dVector("filter").Fill(.5f );
 
@@ -88,6 +90,17 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             result[0].Should().Be(1.5f);
             result[1].Should().Be(-2.5f);
             result[2].Should().Be(0f);
+        }
+
+        [Test]
+        public void TestUpdate_UseBias()
+        {
+            var layer = NN.Layers.Conv1D(2, kernelInitializer: new ConstantInitializer(1), biasInitializer: new ConstantInitializer(2));
+            layer.Build(4);
+
+            var result = layer.Update(new float[] { 3, -5, -4, 2 });
+            result.Should().HaveCount(3);
+            result.Should().BeEquivalentTo(new[] { 0f, -7f, 0f });
         }
     }
 }
