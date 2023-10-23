@@ -9,20 +9,26 @@ namespace Ivankarez.NeuralNetworks.Layers
     {
         public int NodeCount { get; private set; }
         public int FilterSize { get; }
+        public bool UseBias { get; }
         public IInitializer KernelInitializer { get; }
+        public IInitializer BiasInitializer { get; }
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
 
         private float[] nodeValues;
         private float[] filter;
+        private float[] biases;
 
-        public ConvolutionalLayer(int filterSize, IInitializer kernelInitializer)
+        public ConvolutionalLayer(int filterSize, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
             if (filterSize < 1) throw new ArgumentException("Filter size must be greater than 0", nameof(filterSize));
             if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
+            if (biasInitializer == null) throw new ArgumentNullException(nameof(biasInitializer));
 
             FilterSize = filterSize;
+            UseBias = useBias;
             KernelInitializer = kernelInitializer;
+            BiasInitializer = biasInitializer;
             NodeCount = -1;
             Parameters = new NamedVectors<float>();
             State = new NamedVectors<float>();
@@ -35,16 +41,23 @@ namespace Ivankarez.NeuralNetworks.Layers
 
             nodeValues = new float[NodeCount];
             filter = KernelInitializer.GenerateValues(inputSize, NodeCount, FilterSize);
+            biases = UseBias ? BiasInitializer.GenerateValues(NodeCount, NodeCount, NodeCount) : new float[0];
 
             State.Add("nodeValues", nodeValues);
             Parameters.Add("filter", filter);
+            Parameters.Add("biases", biases);
         }
 
         public float[] Update(float[] inputValues)
         {
             for (int kernelIndex = 0; kernelIndex < NodeCount; kernelIndex++)
             {
-                nodeValues[kernelIndex] = DotProductWithFilter(inputValues, kernelIndex);
+                var value = DotProductWithFilter(inputValues, kernelIndex);
+                if (UseBias)
+                {
+                    value += biases[kernelIndex];
+                }
+                nodeValues[kernelIndex] = value;
             }
 
             return nodeValues;

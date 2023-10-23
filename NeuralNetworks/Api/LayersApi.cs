@@ -52,13 +52,16 @@ namespace Ivankarez.NeuralNetworks.Api
         /// Creates and returns a 1D Convolutional Layer.
         /// </summary>
         /// <param name="filterSize">The size of the convolutional filters in the layer.</param>
+        /// <param name="useBias">A flag indicating whether bias terms should be used in the layer. Defaults to true.</param>
         /// <param name="kernelInitializer">The initializer for the filter kernels of the layer. Defaults to Glorot Uniform initialization.</param>
+        /// <param name="biasInitializer">The initializer for bias terms of the layer. Defaults to initializing with zeros.</param>
         /// <returns>A 1D Convolutional Layer instance configured with the specified parameters.</returns>
-        public ConvolutionalLayer Conv1D(int filterSize, IInitializer kernelInitializer = null)
+        public ConvolutionalLayer Conv1D(int filterSize, bool useBias = true, IInitializer kernelInitializer = null, IInitializer biasInitializer = null)
         {
             kernelInitializer ??= NN.Initializers.GlorotUniform();
+            biasInitializer ??= NN.Initializers.Zeros();
 
-            return new ConvolutionalLayer(filterSize, kernelInitializer);
+            return new ConvolutionalLayer(filterSize, useBias, kernelInitializer, biasInitializer);
         }
 
         /// <summary>
@@ -70,14 +73,17 @@ namespace Ivankarez.NeuralNetworks.Api
         /// <param name="filterHeight">The height of the convolutional filters in the layer.</param>
         /// <param name="strideX">The horizontal stride for filter movement. Defaults to 1.</param>
         /// <param name="strideY">The vertical stride for filter movement. Defaults to 1.</param>
+        /// <param name="useBias">A flag indicating whether bias terms should be used in the layer. Defaults to true.</param>
         /// <param name="kernelInitializer">The initializer for the filter kernels of the layer. Defaults to Glorot Uniform initialization.</param>
+        /// <param name="biasInitializer">The initializer for bias terms of the layer. Defaults to initializing with zeros.</param>
         /// <returns>A 2D Convolutional Layer instance configured with the specified parameters.</returns>
         public Convolutional2dLayer Conv2D(int inputWidth, int inputHeight, int filterWidth, int filterHeight,
-            int strideX = 1, int strideY = 1, IInitializer kernelInitializer = null)
+            int strideX = 1, int strideY = 1, bool useBias = true, IInitializer kernelInitializer = null, IInitializer biasInitializer = null)
         {
             kernelInitializer ??= NN.Initializers.GlorotUniform();
+            biasInitializer ??= NN.Initializers.Zeros();
 
-            return new Convolutional2dLayer(inputWidth, inputHeight, filterWidth, filterHeight, strideX, strideY, kernelInitializer);
+            return new Convolutional2dLayer(inputWidth, inputHeight, filterWidth, filterHeight, strideX, strideY, useBias, kernelInitializer, biasInitializer);
         }
 
         /// <summary>
