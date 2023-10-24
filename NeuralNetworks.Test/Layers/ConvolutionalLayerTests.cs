@@ -12,7 +12,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestBuild_HappyPath()
         {
-            var layer = NN.Layers.Conv1D(3, false);
+            var layer = NN.Layers.Conv1D(3, useBias: false);
 
             layer.Build(3);
 
@@ -49,7 +49,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_SingleKernel()
         {
-            var layer = NN.Layers.Conv1D(3, false);
+            var layer = NN.Layers.Conv1D(3, useBias: false);
             layer.Build(3);
             layer.Parameters.Get1dVector("filter").Fill(1, 2, -1);
 
@@ -62,7 +62,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_MultipleKernel()
         {
-            var layer = NN.Layers.Conv1D(2, false);
+            var layer = NN.Layers.Conv1D(2, useBias: false);
             layer.Build(6);
             layer.Parameters.Get1dVector("filter").Fill(1, -2);
 
@@ -79,7 +79,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void TestUpdate_ShortestFilter()
         {
-            var layer = NN.Layers.Conv1D(1, false);
+            var layer = NN.Layers.Conv1D(1, useBias: false);
             layer.Build(3);
             layer.Parameters.Get1dVector("filter").Fill(.5f);
 
@@ -100,6 +100,16 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var result = layer.Update(new float[] { 3, -5, -4, 2 });
             result.Should().HaveCount(3);
             result.Should().BeEquivalentTo(new[] { 0f, -7f, 0f });
+        }
+
+        [Test]
+        public void TestUpdate_WithStride()
+        {
+            var layer = NN.Layers.Conv1D(2, stride: 2, useBias: false);
+            layer.Build(6);
+            layer.Parameters.Get1dVector("filter").Fill(1, -2);
+            var result = layer.Update(new[] { 3f, -5f, -4f, 2f, 3f, 1f });
+            result.Should().BeEquivalentTo(new[] { 13f, -8f, 1f });
         }
     }
 }

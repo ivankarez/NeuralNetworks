@@ -52,16 +52,17 @@ namespace Ivankarez.NeuralNetworks.Api
         /// Creates and returns a 1D Convolutional Layer.
         /// </summary>
         /// <param name="filterSize">The size of the convolutional filters in the layer.</param>
+        /// <param name="stride">The stride for the filter movement. Defaults to 1.</param>
         /// <param name="useBias">A flag indicating whether bias terms should be used in the layer. Defaults to true.</param>
         /// <param name="kernelInitializer">The initializer for the filter kernels of the layer. Defaults to Glorot Uniform initialization.</param>
         /// <param name="biasInitializer">The initializer for bias terms of the layer. Defaults to initializing with zeros.</param>
         /// <returns>A 1D Convolutional Layer instance configured with the specified parameters.</returns>
-        public ConvolutionalLayer Conv1D(int filterSize, bool useBias = true, IInitializer kernelInitializer = null, IInitializer biasInitializer = null)
+        public ConvolutionalLayer Conv1D(int filterSize, int stride = 1, bool useBias = true, IInitializer kernelInitializer = null, IInitializer biasInitializer = null)
         {
             kernelInitializer ??= NN.Initializers.GlorotUniform();
             biasInitializer ??= NN.Initializers.Zeros();
 
-            return new ConvolutionalLayer(filterSize, useBias, kernelInitializer, biasInitializer);
+            return new ConvolutionalLayer(filterSize, stride, useBias, kernelInitializer, biasInitializer);
         }
 
         /// <summary>
