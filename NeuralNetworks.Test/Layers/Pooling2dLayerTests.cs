@@ -11,7 +11,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Build_HappyPath()
         {
-            var layer = new Pooling2dLayer(3, 3, 2, 2, 1, 1, PoolingType.Max);
+            var layer = new Pooling2dLayer((3, 3), (2, 2), (1, 1), PoolingType.Max);
             layer.Build(9);
             layer.State.Get1dVector("nodeValues").Should().HaveCount(4);
             layer.Parameters.Get1dVectorNames().Should().BeEmpty();
@@ -21,7 +21,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [Test]
         public void Build_InvalidInputSize()
         {
-            var layer = new Pooling2dLayer(3, 3, 2, 2, 1, 1, PoolingType.Max);
+            var layer = new Pooling2dLayer((3, 3), (2, 2), (1, 1), PoolingType.Max);
             layer.Invoking(l => l.Build(10)).Should().Throw<ArgumentException>();
         }
 
@@ -31,7 +31,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [TestCase(PoolingType.Sum, new float[] { 0, 0, 12, 5 })]
         public void Update_HappyPath(PoolingType poolingType, float[] expectedResults)
         {
-            var layer = new Pooling2dLayer(3, 3, 2, 2, 1, 1, poolingType);
+            var layer = new Pooling2dLayer((3, 3), (2, 2), (1, 1), poolingType);
             layer.Build(9);
             var inputs = new float[] {
                 -1, -2, -3,

@@ -99,20 +99,18 @@ namespace Ivankarez.NeuralNetworks.Api
         }
 
         /// <summary>
-        /// Creates and returns a 2D Pooling Layer.
+        /// Creates and returns a 2D Pooling Layer for a neural network.
         /// </summary>
-        /// <param name="inputWidth">The width of the input feature map to the layer.</param>
-        /// <param name="inputHeight">The height of the input feature map to the layer.</param>
-        /// <param name="windowWidth">The width of the pooling window, which determines the area over which pooling is applied.</param>
-        /// <param name="windowHeight">The height of the pooling window, which determines the area over which pooling is applied.</param>
-        /// <param name="strideX">The horizontal stride for pooling operations. Defaults to 1.</param>
-        /// <param name="strideY">The vertical stride for pooling operations. Defaults to 1.</param>
+        /// <param name="inputSize">The size of the input feature map to the layer (width and height).</param>
+        /// <param name="windowSize">The size of the pooling window, which determines the area over which pooling is applied (width and height).</param>
+        /// <param name="stride">The horizontal and vertical stride for pooling operations. Defaults to (1, 1).</param>
         /// <param name="poolingType">The type of pooling. Defaults to Max pooling.</param>
         /// <returns>A 2D Pooling Layer instance configured with the specified parameters.</returns>
-        public Pooling2dLayer Pooling2D(int inputWidth, int inputHeight, int windowWidth, int windowHeight,
-            int strideX = 1, int strideY = 1, PoolingType poolingType = PoolingType.Max)
+        public Pooling2dLayer Pooling2D(Size2D inputSize, Size2D windowSize, Stride2D stride = null, PoolingType poolingType = PoolingType.Max)
         {
-            return new Pooling2dLayer(inputWidth, inputHeight, windowWidth, windowHeight, strideX, strideY, poolingType);
+            stride ??= new Stride2D(1, 1);
+
+            return new Pooling2dLayer(inputSize, windowSize, stride, poolingType);
         }
     }
 }

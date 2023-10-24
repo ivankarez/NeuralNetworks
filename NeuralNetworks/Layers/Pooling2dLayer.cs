@@ -10,12 +10,9 @@ namespace Ivankarez.NeuralNetworks.Layers
         public int NodeCount { get; private set; }
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
-        public int InputWidth { get; }
-        public int InputHeight { get; }
-        public int WindowWidth { get; }
-        public int WindowHeigth { get; }
-        public int StrideX { get; }
-        public int StrideY { get; }
+        public Size2D InputSize { get; }
+        public Size2D WindowSize { get; }
+        public Stride2D Stride { get; }
         public PoolingType PoolingType { get; }
 
         private readonly Func<int, int, float[], float> pooling;
@@ -23,24 +20,17 @@ namespace Ivankarez.NeuralNetworks.Layers
         private int nodeValuesWidth;
         private int nodeValuesHeight;
 
-        public Pooling2dLayer(int inputWidth, int inputHeight, int windowWidth, int windowHeigth, int strideX, int strideY, PoolingType poolingType)
+        public Pooling2dLayer(Size2D inputSize, Size2D windowSize, Stride2D stride, PoolingType poolingType)
         {
-            if (inputWidth < 1) throw new ArgumentException("Input width must be greater than 0", nameof(inputWidth));
-            if (inputHeight < 1) throw new ArgumentException("Input height must be greater than 0", nameof(inputHeight));
-            if (windowWidth < 2) throw new ArgumentException("Filter width must be greater than 1", nameof(windowWidth));
-            if (windowHeigth < 2) throw new ArgumentException("Filter height must be greater than 1", nameof(windowHeigth));
-            if (strideX < 1) throw new ArgumentException("Stride X must be greater than 0", nameof(strideX));
-            if (strideY < 1) throw new ArgumentException("Stride Y must be greater than 0", nameof(strideY));
+            if (inputSize == null) throw new ArgumentNullException(nameof(inputSize));
+            if (windowSize == null) throw new ArgumentNullException(nameof(windowSize));
+            if (stride == null) throw new ArgumentNullException(nameof(stride));
+            if (windowSize.Width > inputSize.Width) throw new ArgumentException("Filter width cannot be greater than input width", nameof(windowSize.Width));
+            if (windowSize.Height > inputSize.Height) throw new ArgumentException("Filter height cannot be greater than input height", nameof(windowSize.Height));
 
-            if (windowWidth > inputWidth) throw new ArgumentException("Filter width cannot be greater than input width", nameof(windowWidth));
-            if (windowHeigth > inputHeight) throw new ArgumentException("Filter height cannot be greater than input height", nameof(windowHeigth));
-
-            InputWidth = inputWidth;
-            InputHeight = inputHeight;
-            WindowWidth = windowWidth;
-            WindowHeigth = windowHeigth;
-            StrideX = strideX;
-            StrideY = strideY;
+            InputSize = inputSize;
+            WindowSize = windowSize;
+            Stride = stride;
             PoolingType = poolingType;
             pooling = GetPooling();
 
@@ -50,11 +40,11 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public void Build(int inputSize)
         {
-            var expectedInputSize = InputWidth * InputHeight;
+            var expectedInputSize = InputSize.Width * InputSize.Height;
             if (inputSize != expectedInputSize) throw new ArgumentException($"Input size must be {expectedInputSize}", nameof(inputSize));
 
-            nodeValuesWidth = (InputWidth - WindowWidth) / StrideX + 1;
-            nodeValuesHeight = (InputHeight - WindowHeigth) / StrideY + 1;
+            nodeValuesWidth = (InputSize.Width - WindowSize.Width) / Stride.Horizontal + 1;
+            nodeValuesHeight = (InputSize.Height - WindowSize.Height) / Stride.Vertical + 1;
             NodeCount = nodeValuesWidth * nodeValuesHeight;
             nodeValues = new float[NodeCount];
 
@@ -65,7 +55,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             for (int nodeX = 0; nodeX < nodeValuesWidth; nodeX += 1)
             {
-                for (int nodeY = 0; nodeY < nodeValuesHeight; nodeY += StrideY)
+                for (int nodeY = 0; nodeY < nodeValuesHeight; nodeY += 1)
                 {
                     var nodeValue = pooling(nodeX, nodeY, inputValues);
                     var nodeIndex = nodeX * nodeValuesHeight + nodeY;
@@ -91,13 +81,13 @@ namespace Ivankarez.NeuralNetworks.Layers
         private float PoolByMax(int nodeX, int nodeY, float[] inputValues)
         {
             var nodeValue = float.NegativeInfinity;
-            for (int fx = 0; fx < WindowWidth; fx += 1)
+            for (int fx = 0; fx < WindowSize.Width; fx += 1)
             {
-                for (int fy = 0; fy < WindowHeigth; fy += 1)
+                for (int fy = 0; fy < WindowSize.Height; fy += 1)
                 {
-                    var inputX = nodeX * StrideX + fx;
-                    var inputY = nodeY * StrideY + fy;
-                    var inputValue = inputValues[inputX * InputWidth + inputY];
+                    var inputX = nodeX * Stride.Horizontal + fx;
+                    var inputY = nodeY * Stride.Vertical + fy;
+                    var inputValue = inputValues[inputX * InputSize.Width + inputY];
                     if (inputValue > nodeValue)
                     {
                         nodeValue = inputValue;
@@ -111,13 +101,13 @@ namespace Ivankarez.NeuralNetworks.Layers
         private float PoolByMin(int nodeX, int nodeY, float[] inputValues)
         {
             var nodeValue = float.PositiveInfinity;
-            for (int fx = 0; fx < WindowWidth; fx += 1)
+            for (int fx = 0; fx < WindowSize.Width; fx += 1)
             {
-                for (int fy = 0; fy < WindowHeigth; fy += 1)
+                for (int fy = 0; fy < WindowSize.Height; fy += 1)
                 {
-                    var inputX = nodeX * StrideX + fx;
-                    var inputY = nodeY * StrideY + fy;
-                    var inputValue = inputValues[inputX * InputWidth + inputY];
+                    var inputX = nodeX * Stride.Horizontal + fx;
+                    var inputY = nodeY * Stride.Vertical + fy;
+                    var inputValue = inputValues[inputX * InputSize.Width + inputY];
                     if (inputValue < nodeValue)
                     {
                         nodeValue = inputValue;
@@ -131,13 +121,13 @@ namespace Ivankarez.NeuralNetworks.Layers
         private float PoolBySum(int nodeX, int nodeY, float[] inputValues)
         {
             var nodeValue = 0f;
-            for (int fx = 0; fx < WindowWidth; fx += 1)
+            for (int fx = 0; fx < WindowSize.Width; fx += 1)
             {
-                for (int fy = 0; fy < WindowHeigth; fy += 1)
+                for (int fy = 0; fy < WindowSize.Height; fy += 1)
                 {
-                    var inputX = nodeX * StrideX + fx;
-                    var inputY = nodeY * StrideY + fy;
-                    var inputValue = inputValues[inputX * InputWidth + inputY];
+                    var inputX = nodeX * Stride.Horizontal + fx;
+                    var inputY = nodeY * Stride.Vertical + fy;
+                    var inputValue = inputValues[inputX * InputSize.Width + inputY];
                     nodeValue += inputValue;
                 }
             }
@@ -147,7 +137,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         private float PoolByAverage(int nodeX, int nodeY, float[] inputValues)
         {
-            return PoolBySum(nodeX, nodeY, inputValues) / (WindowWidth * WindowHeigth);
+            return PoolBySum(nodeX, nodeY, inputValues) / (WindowSize.Width * WindowSize.Height);
         }
     }
 }
