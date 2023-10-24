@@ -9,6 +9,7 @@ namespace Ivankarez.NeuralNetworks.Layers
     {
         public int NodeCount { get; private set; }
         public int FilterSize { get; }
+        public int Stride { get; }
         public bool UseBias { get; }
         public IInitializer KernelInitializer { get; }
         public IInitializer BiasInitializer { get; }
@@ -19,13 +20,15 @@ namespace Ivankarez.NeuralNetworks.Layers
         private float[] filter;
         private float[] biases;
 
-        public ConvolutionalLayer(int filterSize, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
+        public ConvolutionalLayer(int filterSize, int stride, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
             if (filterSize < 1) throw new ArgumentException("Filter size must be greater than 0", nameof(filterSize));
+            if (stride < 1) throw new ArgumentException("Stride must be greater than 0", nameof(stride));
             if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
             if (biasInitializer == null) throw new ArgumentNullException(nameof(biasInitializer));
 
             FilterSize = filterSize;
+            Stride = stride;
             UseBias = useBias;
             KernelInitializer = kernelInitializer;
             BiasInitializer = biasInitializer;
@@ -36,7 +39,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public void Build(int inputSize)
         {
-            NodeCount = inputSize - FilterSize + 1;
+            NodeCount = (inputSize - FilterSize) / Stride + 1;
             if (NodeCount < 1) throw new ArgumentException("filterSize cannot be less than the size of the previous layer", nameof(inputSize));
 
             nodeValues = new float[NodeCount];
@@ -52,7 +55,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             for (int kernelIndex = 0; kernelIndex < NodeCount; kernelIndex++)
             {
-                var value = DotProductWithFilter(inputValues, kernelIndex);
+                var value = DotProductWithFilter(inputValues, kernelIndex * Stride);
                 if (UseBias)
                 {
                     value += biases[kernelIndex];
