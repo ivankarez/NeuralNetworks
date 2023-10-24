@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Ivankarez.NeuralNetworks.Api;
 using Ivankarez.NeuralNetworks.Layers;
 using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
@@ -40,6 +41,25 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             };
             var result = layer.Update(inputs);
             result.Should().BeEquivalentTo(expectedResults);
+        }
+
+        [Test]
+        public void Update_CheckStride()
+        {
+            var layer = NN.Layers.Pooling2D((5, 6), (2, 2), (2, 3));
+            layer.Build(30);
+
+            var inputs = new float[] { 
+                0, 1, 0, 1, 2,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 3, 0, 1, 4,
+                0, 6, 0, 0, 7,
+                0, 0, 0, 0, 0,
+            };
+            var result = layer.Update(inputs);
+
+            result.Should().BeEquivalentTo(new[] { 1f, 2f, 3f, 4f });
         }
     }
 }
