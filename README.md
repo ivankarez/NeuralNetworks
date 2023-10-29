@@ -47,7 +47,7 @@ model.SetParametersFlat(newParameters);
 If you just want to count the number of parameters, you can use the `CountParameters()` extension method of the model.
 
 ### Demo Programs
-- Character classification trained with simple evolution: TODO
+There is a [NeuralNetworks.Demos](https://github.com/ivankarez/NeuralNetworks.Demos) repository, where we plan to collect different demos for this library. Currently it only contains a simple C# application where we train a neural network to learn classifying images of 'A' and 'B' characters.
 
 ## Features
 This is a simple list of available features of this package. If you look for available parameters or default values, you can take a look at the corresponding API codes linked in the section headers.
