@@ -25,11 +25,3 @@ jobs:
       run: dotnet build --no-restore --configuration Debug
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Build with Release
-      run: dotnet build --no-restore --configuration Release
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.1
-      with:
-        name: NeuralNetworks
-        path: NeuralNetworks/bin/Release/net6.0/
-        retention-days: 7
