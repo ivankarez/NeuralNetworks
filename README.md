@@ -7,6 +7,12 @@ Introducing a lightweight and specialized neural network library for C#, meticul
 - No extra dependencies. Makes it easy to drop it into your Unity or C# project as a single DLL file.
 
 ## Getting Started
+### Install
+You can install NeuralNetworks from [NuGet](https://www.nuget.org/packages/Ivankarez.NeuralNetworks/). For Unity projects, it's is recommended to install it using [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity).
+```shell
+dotnet add package Ivankarez.NeuralNetworks
+```
+If you prefer, you can also drop it into your project as a DLL file. You can download the latest build from the [current release](https://github.com/ivankarez/NeuralNetworks/releases/latest).
 ### Basic Usage
 Creating a simple neural network with dense layers should be very similar if you are familiar with keras. You can reach all the functionality through the `NN` class from the `Ivankarez.NeuralNetworks.Api` namespace. This is the base class to declare your network. The NN api provides an easy way to access the capabilities of the library. You can use `NN.Layers` to create new layers, `NN.Activations` to access activation functions and so on. More of this in the [Features](#features) section.
 
