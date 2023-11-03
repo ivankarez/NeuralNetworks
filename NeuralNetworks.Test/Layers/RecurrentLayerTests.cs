@@ -16,7 +16,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_SingleCall()
         {
             var layer = new RecurrentLayer(2, new LinearActivation(), false, defaultInitializer, defaultInitializer, defaultInitializer);
-            layer.Build(1);
+            layer.Build(new Size1D(1));
             layer.Parameters.Get2dVector("weights").Fill(new float[,] { { 1 }, { -1 } });
             layer.Parameters.Get1dVector("recurrentWeights").Fill(.5f, -.5f);
             var result = layer.Update(new float[] { 1f });
@@ -32,7 +32,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_DoubleCall()
         {
             var layer = new RecurrentLayer(2, new LinearActivation(), false, defaultInitializer, defaultInitializer, defaultInitializer);
-            layer.Build(1);
+            layer.Build(new Size1D(1));
             layer.Parameters.Get2dVector("weights").Fill(new float[,] { { 1 }, { -1 } });
             layer.Parameters.Get1dVector("recurrentWeights").Fill(.5f, -.5f);
 
@@ -50,7 +50,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_HappyPathWithBias()
         {
             var layer = new RecurrentLayer(2, new LinearActivation(), true, defaultInitializer, defaultInitializer, defaultInitializer);
-            layer.Build(1);
+            layer.Build(new Size1D(1));
             layer.Parameters.Get2dVector("weights").Fill(new float[,] { { 1 }, { -1 } });
             layer.Parameters.Get1dVector("recurrentWeights").Fill(.5f, -.5f);
             layer.Parameters.Get1dVector("biases").Fill(10, 10);
@@ -72,7 +72,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var biasInitializer = new ConstantInitializer(3);
 
             var layer = new RecurrentLayer(2, new LinearActivation(), true, kernelInitializer, biasInitializer, recurrentInitializer);
-            layer.Build(1);
+            layer.Build(new Size1D(1));
 
             layer.Parameters.Get2dVector("weights").Should().BeEquivalentTo(new float[,] { { 1 }, { 1 } });
             layer.Parameters.Get1dVector("recurrentWeights").Should().BeEquivalentTo(new float[] { 2, 2 });

@@ -7,7 +7,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 {
     public class PoolingLayer : IModelLayer
     {
-        public int NodeCount { get; private set; }
+        public ISize OutputSize { get; private set; }
         public int Window { get; }
         public int Stride { get; }
         public PoolingType Type { get; }
@@ -24,16 +24,15 @@ namespace Ivankarez.NeuralNetworks.Layers
             Window = window;
             Stride = stride;
             Type = type;
-            NodeCount = -1;
 
             Parameters = new NamedVectors<float>();
             State = new NamedVectors<float>();
         }
 
-        public void Build(int inputSize)
+        public void Build(ISize inputSize)
         {
-            NodeCount = (int)Math.Ceiling((double)inputSize / Stride);
-            nodeValues = new float[NodeCount];
+            OutputSize = new Size1D(ConvolutionUtils.CalculateOutputSize(inputSize.TotalSize, Window, Stride));
+            nodeValues = new float[OutputSize.TotalSize];
             State.Add("nodeValues", nodeValues);
         }
 

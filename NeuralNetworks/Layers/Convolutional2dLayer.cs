@@ -8,10 +8,10 @@ namespace Ivankarez.NeuralNetworks.Layers
 {
     public class Convolutional2dLayer : IModelLayer
     {
-        public int NodeCount { get; private set; }
+        public ISize OutputSize { get; private set; }
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
-        public Size2D InputSize { get; }
+        public Size2D InputSize { get; set; }
         public Size2D FilterSize { get; }
         public Stride2D Stride { get; }
         public bool UseBias { get; }
@@ -21,24 +21,19 @@ namespace Ivankarez.NeuralNetworks.Layers
         private float[] nodeValues;
         private float[] biases;
         private float[,] filter;
-        private int nodeValuesWidth;
-        private int nodeValuesHeight;
+        private int outputWidth;
+        private int outputHeight;
 
-        public Convolutional2dLayer(Size2D inputSize, Size2D filterSize, Stride2D stride,
+        public Convolutional2dLayer(Size2D filterSize, Stride2D stride,
             bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
-            if (inputSize == null) throw new ArgumentNullException(nameof(inputSize));
             if (filterSize == null) throw new ArgumentNullException(nameof(filterSize));
             if (stride == null) throw new ArgumentNullException(nameof(stride));
             if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
             if (biasInitializer == null) throw new ArgumentNullException(nameof(biasInitializer));
 
-            if (filterSize.Width > inputSize.Width) throw new ArgumentException("Filter width cannot be greater than input width", nameof(filterSize.Width));
-            if (filterSize.Height > inputSize.Height) throw new ArgumentException("Filter height cannot be greater than input height", nameof(filterSize.Height));
-
             Parameters = new NamedVectors<float>();
             State = new NamedVectors<float>();
-            InputSize = inputSize;
             FilterSize = filterSize;
             Stride = stride;
             UseBias = useBias;
@@ -46,17 +41,19 @@ namespace Ivankarez.NeuralNetworks.Layers
             BiasInitializer = biasInitializer;
         }
 
-        public void Build(int inputSize)
+        public void Build(ISize inputSize)
         {
-            var expectedInputSize = InputSize.Width * InputSize.Height;
-            if (inputSize != expectedInputSize) throw new ArgumentException($"Input size must be {expectedInputSize}", nameof(inputSize));
-
-            nodeValuesWidth = (InputSize.Width - FilterSize.Width) / Stride.Horizontal + 1;
-            nodeValuesHeight = (InputSize.Height - FilterSize.Height) / Stride.Vertical + 1;
-            NodeCount = nodeValuesWidth * nodeValuesHeight;
-            nodeValues = new float[NodeCount];
-            filter = KernelInitializer.GenerateValues2d(inputSize, NodeCount, FilterSize.Width, FilterSize.Height);
-            biases = UseBias ? BiasInitializer.GenerateValues(inputSize, NodeCount, NodeCount) : new float[0];
+            if (!(inputSize is Size2D))
+            {
+                throw new ArgumentException($"Input size must be {nameof(Size2D)}", nameof(inputSize));
+            }
+            InputSize = inputSize as Size2D;
+            outputWidth = ConvolutionUtils.CalculateOutputSize(InputSize.Width, FilterSize.Width, Stride.Horizontal);
+            outputHeight = ConvolutionUtils.CalculateOutputSize(InputSize.Height, FilterSize.Height, Stride.Vertical);
+            OutputSize = new Size2D(outputWidth, outputHeight);
+            nodeValues = new float[OutputSize.TotalSize];
+            filter = KernelInitializer.GenerateValues2d(inputSize.TotalSize, OutputSize.TotalSize, FilterSize.Width, FilterSize.Height);
+            biases = UseBias ? BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize) : new float[0];
 
             State.Add("nodeValues", nodeValues);
             Parameters.Add("filter", filter);
@@ -65,9 +62,9 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public float[] Update(float[] inputValues)
         {
-            for (int nodeX = 0; nodeX < nodeValuesWidth; nodeX += 1)
+            for (int nodeX = 0; nodeX < outputWidth; nodeX += 1)
             {
-                for (int nodeY = 0; nodeY < nodeValuesHeight; nodeY += 1)
+                for (int nodeY = 0; nodeY < outputHeight; nodeY += 1)
                 {
                     var nodeValue = 0f;
                     for (int fx = 0; fx < filter.GetLength(0); fx += 1)
@@ -79,7 +76,7 @@ namespace Ivankarez.NeuralNetworks.Layers
                             nodeValue += inputValues[inputX * InputSize.Width + inputY] * filter[fx, fy];
                         }
                     }
-                    var nodeIndex = nodeX * nodeValuesHeight + nodeY;
+                    var nodeIndex = nodeX * outputHeight + nodeY;
                     if (UseBias)
                     {
                         nodeValue += biases[nodeIndex];
