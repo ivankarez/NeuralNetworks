@@ -24,7 +24,7 @@ Sample code to create layered model with 3 dense layers. The node count of the l
 ```C#
 using Ivankarez.NeuralNetworks.Api;
 
-var neuralNetwork = NN.Models.Layered(3,
+var neuralNetwork = NN.Models.Layered(NN.Size.Of(3),
         NN.Layers.Dense(10),
         NN.Layers.Dense(3, activation: NN.Activations.Tanh()),
         NN.Layers.Dense(2));
@@ -84,6 +84,10 @@ This is a simple list of available features of this package. If you look for ava
 - Normal
 - Glorot uniform
 - Glorot normal
+
+### [Size](https://github.com/ivankarez/NeuralNetworks/blob/main/NeuralNetworks/Api/SizeApi.cs)
+- *Of(int)*: Create a Size1D object
+- *Of(int, int)*: Create a Size2D object
 
 ## Contributions
 All contributions are welcome. For a starting point it's quite easy to implement other activation functions and initializers. Also extending test coverage, or simplify tests can be a good starting point.
