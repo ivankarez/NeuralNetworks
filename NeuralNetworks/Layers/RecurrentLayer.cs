@@ -40,11 +40,14 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             weights = KernelInitializer.GenerateValues2d(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
             recurrentWeights = RecurrentInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
-            biases = useBias ? BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize) : new float[0];
             nodeValues = new float[OutputSize.TotalSize];
+            if (useBias)
+            {
+                biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
+                Parameters.Add("biases", biases);
+            }
 
             State.Add("nodeValues", nodeValues);
-            Parameters.Add("biases", biases);
             Parameters.Add("weights", weights);
             Parameters.Add("recurrentWeights", recurrentWeights);
         }

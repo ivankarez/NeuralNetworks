@@ -21,6 +21,18 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         }
 
         [Test]
+        public void TestBuild_WithBias()
+        {
+            var layer = NN.Layers.Conv1D(3);
+
+            layer.Build(NN.Size.Of(3));
+
+            layer.Parameters.Get1dVector("filter").Should().HaveCount(3);
+            layer.State.Get1dVector("nodeValues").Should().HaveCount(1);
+            layer.Parameters.Get1dVector("biases").Should().HaveCount(1);
+        }
+
+        [Test]
         public void TestBuild_UseInitializer()
         {
             var layer = NN.Layers.Conv1D(3, kernelInitializer: new ConstantInitializer(3f), biasInitializer: new ConstantInitializer(2f));

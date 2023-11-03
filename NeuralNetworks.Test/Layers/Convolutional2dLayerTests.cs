@@ -24,7 +24,6 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.Conv2D((2, 2), useBias: false);
             layer.Build(NN.Size.Of(3, 3));
             layer.OutputSize.Should().Be(NN.Size.Of(2, 2));
-            layer.Parameters.Get1dVector("biases").Should().BeEmpty();
         }
 
         [Test]
