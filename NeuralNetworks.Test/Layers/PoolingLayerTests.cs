@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Ivankarez.NeuralNetworks.Api;
 using Ivankarez.NeuralNetworks.Layers;
 using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
@@ -11,8 +12,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_MaxPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Max);
-            layer.Build(new Size1D(9));
-            layer.OutputSize.Should().Be(new Size1D(3));
+            layer.Build(NN.Size.Of(9));
+            layer.OutputSize.Should().Be(NN.Size.Of(3));
 
             var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, 1f, -1f, -2f, -1f });
 
@@ -26,8 +27,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_MinPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Min);
-            layer.Build(new Size1D(9));
-            layer.OutputSize.Should().Be(new Size1D(3));
+            layer.Build(NN.Size.Of(9));
+            layer.OutputSize.Should().Be(NN.Size.Of(3));
 
             var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, 0f, -1f, -2f, -1f });
 
@@ -41,8 +42,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_SumPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Sum);
-            layer.Build(new Size1D(9));
-            layer.OutputSize.Should().Be(new Size1D(3));
+            layer.Build(NN.Size.Of(9));
+            layer.OutputSize.Should().Be(NN.Size.Of(3));
 
             var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, -2f, -1f, -2f, -1f });
 
@@ -56,8 +57,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_AvgPooling()
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Average);
-            layer.Build(new Size1D(9));
-            layer.OutputSize.Should().Be(new Size1D(3));
+            layer.Build(NN.Size.Of(9));
+            layer.OutputSize.Should().Be(NN.Size.Of(3));
 
             var result = layer.Update(new float[] { 1f, 2f, 3f, 5f, 1f, -3f, -1f, -2f, -3f });
 
@@ -74,8 +75,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_LargeWindow(PoolingType type, float input1, float input2, float output)
         {
             var layer = new PoolingLayer(2, 1, type);
-            layer.Build(new Size1D(2));
-            layer.OutputSize.Should().Be(new Size1D(1));
+            layer.Build(NN.Size.Of(2));
+            layer.OutputSize.Should().Be(NN.Size.Of(1));
 
             var result = layer.Update(new float[] { input1, input2 });
 
@@ -90,8 +91,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_DifferentStrideAndWindow(PoolingType type, float[] input, float[] output)
         {
             var layer = new PoolingLayer(3, 1, type);
-            layer.Build(new Size1D(input.Length));
-            layer.OutputSize.Should().Be(new Size1D(output.Length));
+            layer.Build(NN.Size.Of(input.Length));
+            layer.OutputSize.Should().Be(NN.Size.Of(output.Length));
 
             var result = layer.Update(input);
 
@@ -110,12 +111,12 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Min);
 
-            layer.Build(new Size1D(inputSize));
+            layer.Build(NN.Size.Of(inputSize));
 
             layer.Parameters.Get1dVectorNames().Should().BeEmpty();
             layer.Parameters.Get2dVectorNames().Should().BeEmpty();
             layer.State.Get1dVector("nodeValues").Should().HaveCount(expectedNodeCount);
-            layer.OutputSize.Should().Be(new Size1D(expectedNodeCount));
+            layer.OutputSize.Should().Be(NN.Size.Of(expectedNodeCount));
         }
     }
 }

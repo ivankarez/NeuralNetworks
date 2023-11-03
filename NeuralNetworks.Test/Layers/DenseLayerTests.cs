@@ -14,7 +14,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var initializer = new ZerosInitializer();
             var layer = new DenseLayer(2, new LinearActivation(), false, initializer, initializer);
-            layer.Build(new Size1D(1));
+            layer.Build(NN.Size.Of(1));
             layer.Parameters.Get2dVector("weights").Fill(new float[,] { { -1f }, { 2.3f } });
 
             var result = layer.Update(new float[] { 2f });
@@ -29,7 +29,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var initializer = new ZerosInitializer();
             var layer = new DenseLayer(3, new LinearActivation(), false, initializer, initializer);
-            layer.Build(new Size1D(2));
+            layer.Build(NN.Size.Of(2));
             layer.Parameters.Get2dVector("weights").Fill(new float[,] { { -1f, 2.3f }, { 1.34f, .5f }, { -.34f, .2f } });
 
             var result = layer.Update(new float[] { 2f, -.5f });
@@ -45,7 +45,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var initializer = new ZerosInitializer();
             var layer = new DenseLayer(2, new LinearActivation(), true, initializer, initializer);
-            layer.Build(new Size1D(1));
+            layer.Build(NN.Size.Of(1));
             layer.Parameters.Get1dVector("biases").Fill(.5f, -.23f);
 
             var result = layer.Update(new float[] { 2f });
@@ -61,7 +61,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var kernelInitializer = new ConstantInitializer(1);
             var biasInitializer = new ConstantInitializer(2);
             var layer = new DenseLayer(2, new LinearActivation(), true, kernelInitializer, biasInitializer);
-            layer.Build(new Size1D(10));
+            layer.Build(NN.Size.Of(10));
 
             var weights = layer.Parameters.Get2dVector("weights");
             for (int x = 0; x < weights.GetLength(0); x++)

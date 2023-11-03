@@ -14,7 +14,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv1D(3, useBias: false);
 
-            layer.Build(new Size1D(3));
+            layer.Build(NN.Size.Of(3));
 
             layer.Parameters.Get1dVector("filter").Should().HaveCount(3);
             layer.State.Get1dVector("nodeValues").Should().HaveCount(1);
@@ -24,7 +24,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestBuild_UseInitializer()
         {
             var layer = NN.Layers.Conv1D(3, kernelInitializer: new ConstantInitializer(3f), biasInitializer: new ConstantInitializer(2f));
-            layer.Build(new Size1D(3));
+            layer.Build(NN.Size.Of(3));
             layer.Parameters.Get1dVector("filter").Should().AllBeEquivalentTo(3);
             layer.Parameters.Get1dVector("biases").Should().AllBeEquivalentTo(2);
         }
@@ -34,7 +34,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv1D(4);
 
-            Action callAction = () => layer.Build(new Size1D(3));
+            Action callAction = () => layer.Build(NN.Size.Of(3));
 
             callAction.Should().Throw<ArgumentException>();
         }
@@ -50,7 +50,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_SingleKernel()
         {
             var layer = NN.Layers.Conv1D(3, useBias: false);
-            layer.Build(new Size1D(3));
+            layer.Build(NN.Size.Of(3));
             layer.Parameters.Get1dVector("filter").Fill(1, 2, -1);
 
             var result = layer.Update(new float[] { 3, -5, -4 });
@@ -63,7 +63,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_MultipleKernel()
         {
             var layer = NN.Layers.Conv1D(2, useBias: false);
-            layer.Build(new Size1D(6));
+            layer.Build(NN.Size.Of(6));
             layer.Parameters.Get1dVector("filter").Fill(1, -2);
 
             var result = layer.Update(new float[] { 3, -5, -4, 2, 3, 1 });
@@ -80,7 +80,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_ShortestFilter()
         {
             var layer = NN.Layers.Conv1D(1, useBias: false);
-            layer.Build(new Size1D(3));
+            layer.Build(NN.Size.Of(3));
             layer.Parameters.Get1dVector("filter").Fill(.5f);
 
             var result = layer.Update(new float[] { 3, -5, 0 });
@@ -95,7 +95,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_UseBias()
         {
             var layer = NN.Layers.Conv1D(2, kernelInitializer: new ConstantInitializer(1), biasInitializer: new ConstantInitializer(2));
-            layer.Build(new Size1D(4));
+            layer.Build(NN.Size.Of(4));
 
             var result = layer.Update(new float[] { 3, -5, -4, 2 });
             result.Should().HaveCount(3);
@@ -106,7 +106,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         public void TestUpdate_WithStride()
         {
             var layer = NN.Layers.Conv1D(2, stride: 2, useBias: false);
-            layer.Build(new Size1D(6));
+            layer.Build(NN.Size.Of(6));
             layer.Parameters.Get1dVector("filter").Fill(1, -2);
             var result = layer.Update(new[] { 3f, -5f, -4f, 2f, 3f, 1f });
             result.Should().BeEquivalentTo(new[] { 13f, -8f, 1f });

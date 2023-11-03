@@ -14,7 +14,7 @@ namespace Ivankarez.NeuralNetworks.Test
         {
             var inputMatrixSize = 125;
             var randomProvider = NN.Random.System(new Random(0));
-            var model = NN.Models.Layered(new Size2D(125, 125),
+            var model = NN.Models.Layered(NN.Size.Of(125, 125),
                     NN.Layers.Conv2D((5, 5), useBias: false, kernelInitializer:NN.Initializers.GlorotNormal(randomProvider)),
                     NN.Layers.Pooling2D((10, 10), (10, 10)),
                     NN.Layers.Dense(12*12, useBias: false, kernelInitializer: NN.Initializers.GlorotUniform(randomProvider)),
