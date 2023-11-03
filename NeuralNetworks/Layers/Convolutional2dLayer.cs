@@ -48,11 +48,14 @@ namespace Ivankarez.NeuralNetworks.Layers
             OutputSize = new Size2D(outputWidth, outputHeight);
             nodeValues = new float[OutputSize.TotalSize];
             filter = KernelInitializer.GenerateValues2d(inputSize.TotalSize, OutputSize.TotalSize, FilterSize.Width, FilterSize.Height);
-            biases = UseBias ? BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize) : new float[0];
+            if (UseBias)
+            {
+                biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
+                Parameters.Add("biases", biases);
+            }
 
             State.Add("nodeValues", nodeValues);
             Parameters.Add("filter", filter);
-            Parameters.Add("biases", biases);
         }
 
         public float[] Update(float[] inputValues)
