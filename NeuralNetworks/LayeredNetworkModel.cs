@@ -9,11 +9,11 @@ namespace Ivankarez.NeuralNetworks
         private readonly IModelLayer[] layers;
 
         public IReadOnlyList<IModelLayer> Layers => layers;
-        public int Inputs { get; }
+        public ISize Inputs { get; }
 
-        public LayeredNetworkModel(int inputs, params IModelLayer[] layers)
+        public LayeredNetworkModel(ISize inputs, params IModelLayer[] layers)
         {
-            if (inputs <= 0) throw new ArgumentOutOfRangeException(nameof(inputs), "Must be bigger than 0");
+            if (inputs.TotalSize <= 0) throw new ArgumentOutOfRangeException(nameof(inputs), "Total size must be bigger than 0");
             if (layers.Length == 0) throw new ArgumentException("Must have at least 1 element", nameof(layers));
 
             Inputs = inputs;
@@ -28,13 +28,13 @@ namespace Ivankarez.NeuralNetworks
             foreach (var layer in layers)
             {
                 layer.Build(inputSize);
-                inputSize = layer.NodeCount;
+                inputSize = layer.OutputSize;
             }
         }
 
         public float[] Feedforward(float[] inputValues)
         {
-            if (inputValues.Length != Inputs) throw new ArgumentException($"Must have length of {Inputs}", nameof(inputValues));
+            if (inputValues.Length != Inputs.TotalSize) throw new ArgumentException($"Must have length of {Inputs}", nameof(inputValues));
 
             var layerInputs = inputValues;
             foreach (var layer in layers)

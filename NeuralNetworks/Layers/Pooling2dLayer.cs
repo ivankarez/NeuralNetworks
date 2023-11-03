@@ -7,10 +7,10 @@ namespace Ivankarez.NeuralNetworks.Layers
 {
     public class Pooling2dLayer : IModelLayer
     {
-        public int NodeCount { get; private set; }
+        public ISize OutputSize { get; private set; }
+        public Size2D InputSize { get; set; }
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
-        public Size2D InputSize { get; }
         public Size2D WindowSize { get; }
         public Stride2D Stride { get; }
         public PoolingType PoolingType { get; }
@@ -20,17 +20,10 @@ namespace Ivankarez.NeuralNetworks.Layers
         private int nodeValuesWidth;
         private int nodeValuesHeight;
 
-        public Pooling2dLayer(Size2D inputSize, Size2D windowSize, Stride2D stride, PoolingType poolingType)
+        public Pooling2dLayer(Size2D windowSize, Stride2D stride, PoolingType poolingType)
         {
-            if (inputSize == null) throw new ArgumentNullException(nameof(inputSize));
-            if (windowSize == null) throw new ArgumentNullException(nameof(windowSize));
-            if (stride == null) throw new ArgumentNullException(nameof(stride));
-            if (windowSize.Width > inputSize.Width) throw new ArgumentException("Filter width cannot be greater than input width", nameof(windowSize.Width));
-            if (windowSize.Height > inputSize.Height) throw new ArgumentException("Filter height cannot be greater than input height", nameof(windowSize.Height));
-
-            InputSize = inputSize;
-            WindowSize = windowSize;
-            Stride = stride;
+            WindowSize = windowSize ?? throw new ArgumentNullException(nameof(windowSize));
+            Stride = stride ?? throw new ArgumentNullException(nameof(stride));
             PoolingType = poolingType;
             pooling = GetPooling();
 
@@ -38,15 +31,15 @@ namespace Ivankarez.NeuralNetworks.Layers
             State = new NamedVectors<float>();
         }
 
-        public void Build(int inputSize)
+        public void Build(ISize inputSize)
         {
-            var expectedInputSize = InputSize.Width * InputSize.Height;
-            if (inputSize != expectedInputSize) throw new ArgumentException($"Input size must be {expectedInputSize}", nameof(inputSize));
+            if (!(inputSize is Size2D)) throw new ArgumentException($"Input size must be {nameof(Size2D)}", nameof(inputSize));
+            InputSize = inputSize as Size2D;
 
-            nodeValuesWidth = (InputSize.Width - WindowSize.Width) / Stride.Horizontal + 1;
-            nodeValuesHeight = (InputSize.Height - WindowSize.Height) / Stride.Vertical + 1;
-            NodeCount = nodeValuesWidth * nodeValuesHeight;
-            nodeValues = new float[NodeCount];
+            nodeValuesWidth = ConvolutionUtils.CalculateOutputSize(InputSize.Width, WindowSize.Width, Stride.Horizontal);
+            nodeValuesHeight = ConvolutionUtils.CalculateOutputSize(InputSize.Height, WindowSize.Height, Stride.Vertical);
+            OutputSize = new Size2D(nodeValuesWidth, nodeValuesHeight);
+            nodeValues = new float[OutputSize.TotalSize];
 
             State.Add("nodeValues", nodeValues);
         }

@@ -1,5 +1,6 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.RandomGeneration;
+using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 
@@ -7,7 +8,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 {
     public class DenseLayer : IModelLayer
     {
-        public int NodeCount { get; }
+        public ISize OutputSize { get; }
         public IInitializer KernelInitializer { get; }
         public IInitializer BiasInitializer { get; }
         public NamedVectors<float> Parameters { get; }
@@ -23,10 +24,8 @@ namespace Ivankarez.NeuralNetworks.Layers
         public DenseLayer(int nodeCount, IActivation activation, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
             if (nodeCount <= 0) throw new ArgumentOutOfRangeException(nameof(nodeCount), "Must be bigger than zero");
-            if (activation == null) throw new ArgumentNullException(nameof(activation));
-
-            NodeCount = nodeCount;
-            this.activation = activation;
+            OutputSize = new Size1D(nodeCount);
+            this.activation = activation ?? throw new ArgumentNullException(nameof(activation));
             this.useBias = useBias;
             KernelInitializer = kernelInitializer;
             BiasInitializer = biasInitializer;
@@ -34,11 +33,11 @@ namespace Ivankarez.NeuralNetworks.Layers
             State = new NamedVectors<float>();
         }
 
-        public void Build(int inputSize)
+        public void Build(ISize inputSize)
         {
-            weights = KernelInitializer.GenerateValues2d(inputSize, NodeCount, NodeCount, inputSize);
-            nodeValues = new float[NodeCount];
-            biases = useBias ? BiasInitializer.GenerateValues(inputSize, NodeCount, NodeCount) : new float[0];
+            weights = KernelInitializer.GenerateValues2d(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
+            nodeValues = new float[OutputSize.TotalSize];
+            biases = useBias ? BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize) : new float[0];
 
             State.Add("nodeValues", nodeValues);
             Parameters.Add("biases", biases);
@@ -47,7 +46,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public float[] Update(float[] inputValues)
         {
-            for (int nodeIndex = 0; nodeIndex < NodeCount; nodeIndex++)
+            for (int nodeIndex = 0; nodeIndex < OutputSize.TotalSize; nodeIndex++)
             {
                 UpdateNode(nodeIndex, inputValues);
             }

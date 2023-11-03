@@ -4,12 +4,12 @@ namespace Ivankarez.NeuralNetworks.Abstractions
 {
     public interface IModelLayer
     {
-        public int NodeCount { get; }
+        public ISize OutputSize { get; }
 
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
 
-        public void Build(int inputSize);
+        public void Build(ISize inputSize);
 
         public float[] Update(float[] inputValues);
     }

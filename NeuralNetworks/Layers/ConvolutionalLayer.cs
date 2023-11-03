@@ -1,5 +1,6 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.RandomGeneration;
+using Ivankarez.NeuralNetworks.Utils;
 using Ivankarez.NeuralNetworks.Values;
 using System;
 
@@ -7,7 +8,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 {
     public class ConvolutionalLayer : IModelLayer
     {
-        public int NodeCount { get; private set; }
+        public ISize OutputSize { get; private set; }
         public int FilterSize { get; }
         public int Stride { get; }
         public bool UseBias { get; }
@@ -24,27 +25,23 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             if (filterSize < 1) throw new ArgumentException("Filter size must be greater than 0", nameof(filterSize));
             if (stride < 1) throw new ArgumentException("Stride must be greater than 0", nameof(stride));
-            if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
-            if (biasInitializer == null) throw new ArgumentNullException(nameof(biasInitializer));
-
             FilterSize = filterSize;
             Stride = stride;
             UseBias = useBias;
-            KernelInitializer = kernelInitializer;
-            BiasInitializer = biasInitializer;
-            NodeCount = -1;
+            KernelInitializer = kernelInitializer ?? throw new ArgumentNullException(nameof(kernelInitializer));
+            BiasInitializer = biasInitializer ?? throw new ArgumentNullException(nameof(biasInitializer));
             Parameters = new NamedVectors<float>();
             State = new NamedVectors<float>();
         }
 
-        public void Build(int inputSize)
+        public void Build(ISize inputSize)
         {
-            NodeCount = (inputSize - FilterSize) / Stride + 1;
-            if (NodeCount < 1) throw new ArgumentException("filterSize cannot be less than the size of the previous layer", nameof(inputSize));
+            if (FilterSize > inputSize.TotalSize) throw new ArgumentException("filterSize cannot be more than the size of the previous layer", nameof(inputSize));
+            OutputSize = new Size1D(ConvolutionUtils.CalculateOutputSize(inputSize.TotalSize, FilterSize, Stride));
 
-            nodeValues = new float[NodeCount];
-            filter = KernelInitializer.GenerateValues(inputSize, NodeCount, FilterSize);
-            biases = UseBias ? BiasInitializer.GenerateValues(NodeCount, NodeCount, NodeCount) : new float[0];
+            nodeValues = new float[OutputSize.TotalSize];
+            filter = KernelInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, FilterSize);
+            biases = UseBias ? BiasInitializer.GenerateValues(OutputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize) : new float[0];
 
             State.Add("nodeValues", nodeValues);
             Parameters.Add("filter", filter);
@@ -53,7 +50,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public float[] Update(float[] inputValues)
         {
-            for (int kernelIndex = 0; kernelIndex < NodeCount; kernelIndex++)
+            for (int kernelIndex = 0; kernelIndex < OutputSize.TotalSize; kernelIndex++)
             {
                 var value = DotProductWithFilter(inputValues, kernelIndex * Stride);
                 if (UseBias)

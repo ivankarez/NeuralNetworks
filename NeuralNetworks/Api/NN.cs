@@ -29,5 +29,10 @@
         /// Gets an instance of the InitializersApi class, which provides access to various weight and bias initialization methods for neural network components.
         /// </summary>
         public static InitializersApi Initializers { get; } = new InitializersApi();
+
+        /// <summary>
+        /// Gets an instance of the SizeApi class, which provides access to size objects in different dimensions.
+        /// </summary>
+        public static SizeApi Size { get; } = new SizeApi();
     }
 }
