@@ -26,17 +26,12 @@ namespace Ivankarez.NeuralNetworks.Layers
         public RecurrentLayer(int nodeCount, IActivation activation, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer, IInitializer recurrentInitializer)
         {
             if (nodeCount <= 0) throw new ArgumentOutOfRangeException(nameof(nodeCount), "Must be bigger than zero");
-            if (activation == null) throw new ArgumentNullException(nameof(activation));
-            if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
-            if (biasInitializer == null) throw new ArgumentNullException(nameof(biasInitializer));
-            if (recurrentInitializer == null) throw new ArgumentNullException(nameof(recurrentInitializer));
-
             OutputSize = new Size1D(nodeCount);
-            this.activation = activation;
+            this.activation = activation ?? throw new ArgumentNullException(nameof(activation));
             this.useBias = useBias;
-            KernelInitializer = kernelInitializer;
-            BiasInitializer = biasInitializer;
-            RecurrentInitializer = recurrentInitializer;
+            KernelInitializer = kernelInitializer ?? throw new ArgumentNullException(nameof(kernelInitializer));
+            BiasInitializer = biasInitializer ?? throw new ArgumentNullException(nameof(biasInitializer));
+            RecurrentInitializer = recurrentInitializer ?? throw new ArgumentNullException(nameof(recurrentInitializer));
             Parameters = new NamedVectors<float>();
             State = new NamedVectors<float>();
         }

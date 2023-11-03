@@ -9,9 +9,7 @@ namespace Ivankarez.NeuralNetworks.RandomGeneration.Initializers
 
         public GlorotNormalInitializer(IRandomProvider randomProvider) 
         {
-            if (randomProvider == null) throw new ArgumentNullException(nameof(randomProvider));
-
-            RandomProvider = randomProvider;
+            RandomProvider = randomProvider ?? throw new ArgumentNullException(nameof(randomProvider));
         }
 
         public float GenerateValue(int fanIn, int fanOut)

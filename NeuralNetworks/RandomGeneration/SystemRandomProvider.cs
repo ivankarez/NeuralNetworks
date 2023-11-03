@@ -9,9 +9,7 @@ namespace Ivankarez.NeuralNetworks.RandomGeneration
 
         public SystemRandomProvider(Random random)
         {
-            if (random == null) throw new ArgumentNullException(nameof(random));
-
-            Random = random;
+            Random = random ?? throw new ArgumentNullException(nameof(random));
         }
 
         public float NextFloat()

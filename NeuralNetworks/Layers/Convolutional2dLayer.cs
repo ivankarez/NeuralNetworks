@@ -27,18 +27,13 @@ namespace Ivankarez.NeuralNetworks.Layers
         public Convolutional2dLayer(Size2D filterSize, Stride2D stride,
             bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
-            if (filterSize == null) throw new ArgumentNullException(nameof(filterSize));
-            if (stride == null) throw new ArgumentNullException(nameof(stride));
-            if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
-            if (biasInitializer == null) throw new ArgumentNullException(nameof(biasInitializer));
-
             Parameters = new NamedVectors<float>();
             State = new NamedVectors<float>();
-            FilterSize = filterSize;
-            Stride = stride;
+            FilterSize = filterSize ?? throw new ArgumentNullException(nameof(filterSize));
+            Stride = stride ?? throw new ArgumentNullException(nameof(stride));
             UseBias = useBias;
-            KernelInitializer = kernelInitializer;
-            BiasInitializer = biasInitializer;
+            KernelInitializer = kernelInitializer ?? throw new ArgumentNullException(nameof(kernelInitializer));
+            BiasInitializer = biasInitializer ?? throw new ArgumentNullException(nameof(biasInitializer));
         }
 
         public void Build(ISize inputSize)

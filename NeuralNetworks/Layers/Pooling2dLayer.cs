@@ -22,11 +22,8 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public Pooling2dLayer(Size2D windowSize, Stride2D stride, PoolingType poolingType)
         {
-            if (windowSize == null) throw new ArgumentNullException(nameof(windowSize));
-            if (stride == null) throw new ArgumentNullException(nameof(stride));
-
-            WindowSize = windowSize;
-            Stride = stride;
+            WindowSize = windowSize ?? throw new ArgumentNullException(nameof(windowSize));
+            Stride = stride ?? throw new ArgumentNullException(nameof(stride));
             PoolingType = poolingType;
             pooling = GetPooling();
 

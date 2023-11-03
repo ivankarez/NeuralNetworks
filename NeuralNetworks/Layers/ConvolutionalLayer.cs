@@ -25,14 +25,11 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             if (filterSize < 1) throw new ArgumentException("Filter size must be greater than 0", nameof(filterSize));
             if (stride < 1) throw new ArgumentException("Stride must be greater than 0", nameof(stride));
-            if (kernelInitializer == null) throw new ArgumentNullException(nameof(kernelInitializer));
-            if (biasInitializer == null) throw new ArgumentNullException(nameof(biasInitializer));
-
             FilterSize = filterSize;
             Stride = stride;
             UseBias = useBias;
-            KernelInitializer = kernelInitializer;
-            BiasInitializer = biasInitializer;
+            KernelInitializer = kernelInitializer ?? throw new ArgumentNullException(nameof(kernelInitializer));
+            BiasInitializer = biasInitializer ?? throw new ArgumentNullException(nameof(biasInitializer));
             Parameters = new NamedVectors<float>();
             State = new NamedVectors<float>();
         }

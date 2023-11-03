@@ -24,10 +24,8 @@ namespace Ivankarez.NeuralNetworks.Layers
         public DenseLayer(int nodeCount, IActivation activation, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
             if (nodeCount <= 0) throw new ArgumentOutOfRangeException(nameof(nodeCount), "Must be bigger than zero");
-            if (activation == null) throw new ArgumentNullException(nameof(activation));
-
             OutputSize = new Size1D(nodeCount);
-            this.activation = activation;
+            this.activation = activation ?? throw new ArgumentNullException(nameof(activation));
             this.useBias = useBias;
             KernelInitializer = kernelInitializer;
             BiasInitializer = biasInitializer;
