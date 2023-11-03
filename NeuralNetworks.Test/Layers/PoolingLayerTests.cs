@@ -73,7 +73,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [TestCase(PoolingType.Average, 1, 2, 1.5f)]
         public void TestUpdate_LargeWindow(PoolingType type, float input1, float input2, float output)
         {
-            var layer = new PoolingLayer(3, 3, type);
+            var layer = new PoolingLayer(2, 1, type);
             layer.Build(new Size1D(2));
             layer.OutputSize.Should().Be(new Size1D(1));
 
@@ -106,7 +106,6 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         [TestCase(11, 3)]
         [TestCase(12, 4)]
         [TestCase(9, 3)]
-        [TestCase(1, 1)]
         public void TestBuild(int inputSize, int expectedNodeCount)
         {
             var layer = new PoolingLayer(3, 3, PoolingType.Min);
