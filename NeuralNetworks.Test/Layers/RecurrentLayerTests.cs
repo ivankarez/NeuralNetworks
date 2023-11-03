@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.Activations;
+using Ivankarez.NeuralNetworks.Api;
 using Ivankarez.NeuralNetworks.Layers;
 using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using Ivankarez.NeuralNetworks.Utils;
