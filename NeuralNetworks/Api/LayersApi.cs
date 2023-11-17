@@ -109,5 +109,28 @@ namespace Ivankarez.NeuralNetworks.Api
 
             return new Pooling2dLayer(windowSize, stride, poolingType);
         }
+
+        /// <summary>
+        /// Creates and returns a Gated Recurrent Unit (GRU) Layer configured with the specified parameters.
+        /// </summary>
+        /// <param name="nodeCount">The number of nodes (neurons) in the GRU layer.</param>
+        /// <param name="activation">The activation function applied to the output of the recurrent units. Defaults to the hyperbolic tangent (Tanh) activation.</param>
+        /// <param name="recurrentActivation">The activation function applied to the recurrent step. Defaults to the Sigmoid activation.</param>
+        /// <param name="useBias">A flag indicating whether bias terms should be used in the GRU layer. Defaults to true.</param>
+        /// <param name="kernelInitializer">The initializer for weights (kernels) of the GRU layer. Defaults to Glorot Uniform initialization.</param>
+        /// <param name="recurrentInitializer">The initializer for recurrent weights of the GRU layer. Defaults to Glorot Uniform initialization.</param>
+        /// <param name="biasInitializer">The initializer for bias terms of the GRU layer. Defaults to initializing with zeros.</param>
+        /// <returns>A Gated Recurrent Unit (GRU) Layer instance configured with the specified parameters.</returns>
+        public GruLayer GRU(Size1D nodeCount, IActivation activation = null, IActivation recurrentActivation = null, bool useBias = true,
+            IInitializer kernelInitializer = null, IInitializer recurrentInitializer = null, IInitializer biasInitializer = null)
+        {
+            activation ??= NN.Activations.Tanh();
+            recurrentActivation ??= NN.Activations.Sigmoid();
+            kernelInitializer ??= NN.Initializers.GlorotUniform();
+            recurrentInitializer ??= NN.Initializers.GlorotUniform();
+            biasInitializer ??= NN.Initializers.Zeros();
+
+            return new GruLayer(nodeCount, activation, recurrentActivation, useBias, kernelInitializer, recurrentInitializer, biasInitializer);
+        }
     }
 }
