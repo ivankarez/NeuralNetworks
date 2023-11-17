@@ -7,18 +7,19 @@ AMD Ryzen 5 5600H with Radeon Graphics, 1 CPU, 12 logical and 6 physical cores
   DefaultJob : .NET 6.0.18 (6.0.1823.26907), X64 RyuJIT AVX2
 
 
-| Type                          | Method           | Mean       | Error     | StdDev   | Allocated |
-|------------------------------ |----------------- |-----------:|----------:|---------:|----------:|
-| Convolutional2dLayerBenchmark | Convolutional2D  | 1,286.7 ns |   4.46 ns |  4.17 ns |         - |
-| ConvolutionalLayerBenchmark   | Convolutional    |   683.6 ns |   1.53 ns |  1.43 ns |         - |
-| DenseLayerBenchmark           | Dense            | 9,292.3 ns | 101.87 ns | 95.29 ns |         - |
-| Pooling2dLayerBenchmark       | Pooling2DMax     |   828.6 ns |   3.16 ns |  2.80 ns |         - |
-| PoolingLayerBenchmark         | PoolingMax       |   756.8 ns |   4.43 ns |  4.15 ns |         - |
-| RecurrentLayerBenchmark       | SimpleRecurrent  | 9,486.2 ns | 100.46 ns | 93.97 ns |         - |
-| Pooling2dLayerBenchmark       | Pooling2DMin     |   787.9 ns |   2.40 ns |  2.25 ns |         - |
-| PoolingLayerBenchmark         | PoolingMin       |   799.3 ns |   2.96 ns |  2.77 ns |         - |
-| Pooling2dLayerBenchmark       | Pooling2DAverage |   756.6 ns |   1.89 ns |  1.68 ns |         - |
-| PoolingLayerBenchmark         | PoolingAvg       |   609.3 ns |   3.25 ns |  2.88 ns |         - |
-| Pooling2dLayerBenchmark       | Pooling2DSum     |   722.4 ns |   2.15 ns |  2.01 ns |         - |
-| PoolingLayerBenchmark         | PoolingSum       |   487.8 ns |   4.87 ns |  4.55 ns |         - |
+| Type                          | Method           | Mean        | Error     | StdDev    | Allocated |
+|------------------------------ |----------------- |------------:|----------:|----------:|----------:|
+| Convolutional2dLayerBenchmark | Convolutional2D  |  1,229.1 ns |   5.54 ns |   5.19 ns |         - |
+| ConvolutionalLayerBenchmark   | Convolutional    |    686.0 ns |   2.88 ns |   2.69 ns |         - |
+| DenseLayerBenchmark           | Dense            |  9,336.5 ns |  90.28 ns |  84.45 ns |         - |
+| GruLayerBenchmark             | GRU              | 19,146.6 ns | 132.64 ns | 117.58 ns |         - |
+| Pooling2dLayerBenchmark       | Pooling2DMax     |    832.4 ns |   4.00 ns |   3.74 ns |         - |
+| PoolingLayerBenchmark         | PoolingMax       |    761.1 ns |   4.94 ns |   4.62 ns |         - |
+| RecurrentLayerBenchmark       | SimpleRecurrent  |  9,368.3 ns |  63.06 ns |  55.90 ns |         - |
+| Pooling2dLayerBenchmark       | Pooling2DMin     |    828.6 ns |   2.34 ns |   1.96 ns |         - |
+| PoolingLayerBenchmark         | PoolingMin       |    846.6 ns |   2.13 ns |   1.99 ns |         - |
+| Pooling2dLayerBenchmark       | Pooling2DAverage |    764.6 ns |   2.96 ns |   2.77 ns |         - |
+| PoolingLayerBenchmark         | PoolingAvg       |    614.6 ns |   9.51 ns |   8.90 ns |         - |
+| Pooling2dLayerBenchmark       | Pooling2DSum     |    724.4 ns |   2.56 ns |   2.40 ns |         - |
+| PoolingLayerBenchmark         | PoolingSum       |    484.9 ns |   1.72 ns |   1.44 ns |         - |
 ```
