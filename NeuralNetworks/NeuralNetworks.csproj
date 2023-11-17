@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Károly Iván</Authors>
-    <Version>4.2.0</Version>
+    <Version>4.3.0</Version>
     <RootNamespace>Ivankarez.NeuralNetworks</RootNamespace>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Ivankarez.NeuralNetworks</PackageId>
@@ -19,9 +19,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>## What's Changed
-* Add demos project to the README
-* Remove size parameter from the constructor of 2D layers
-* Only add biases to IModelLayer.Parameters when useBias flag is true</PackageReleaseNotes>
+* Add layer benchmarks
+* Add GRU Layer implementation</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
