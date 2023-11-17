@@ -55,21 +55,25 @@ namespace Ivankarez.NeuralNetworks.Layers
 
             ForgetGateWeights = KernelInitializer.GenerateValues2d(inputs, nodes, nodes, inputs);
             ForgetRecurrentWeights = RecurrentInitializer.GenerateValues(inputs, nodes, nodes);
-            ForgetBiases = BiasInitializer.GenerateValues(inputs, nodes, nodes);
 
             CandidateWeights = KernelInitializer.GenerateValues2d(inputs, nodes, nodes, inputs);
             CandidateRecurrentWeights = RecurrentInitializer.GenerateValues(inputs, nodes, nodes);
-            CandidateBiases = BiasInitializer.GenerateValues(inputs, nodes, nodes);
 
             NodeValues = new float[nodes];
 
             Parameters.Add("forgetGateWeights", ForgetGateWeights);
             Parameters.Add("forgetRecurrentWeights", ForgetRecurrentWeights);
-            Parameters.Add("forgetBiases", ForgetBiases);
             Parameters.Add("candidateWeights", CandidateWeights);
             Parameters.Add("candidateRecurrentWeights", CandidateRecurrentWeights);
-            Parameters.Add("candidateBiases", CandidateBiases);
             State.Add("nodeValues", NodeValues);
+
+            if (UseBias)
+            {
+                CandidateBiases = BiasInitializer.GenerateValues(inputs, nodes, nodes);
+                ForgetBiases = BiasInitializer.GenerateValues(inputs, nodes, nodes);
+                Parameters.Add("forgetBiases", ForgetBiases);
+                Parameters.Add("candidateBiases", CandidateBiases);
+            }
         }
 
         public float[] Update(float[] inputValues)
@@ -84,9 +88,18 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         private void UpdateCell(int index, float[] inputs)
         {
-            var forgetGateInput = Mutliply(ForgetGateWeights, inputs, index) + (NodeValues[index] * ForgetRecurrentWeights[index]) + ForgetBiases[index];
+            var forgetGateInput = Mutliply(ForgetGateWeights, inputs, index) + (NodeValues[index] * ForgetRecurrentWeights[index]);
+            if (UseBias)
+            {
+                forgetGateInput += ForgetBiases[index];
+            }
             var forgetGate = RecurrentActivation.Apply(forgetGateInput);
-            var candidateInput = Mutliply(CandidateWeights, inputs, index) + (NodeValues[index] * CandidateRecurrentWeights[index] * forgetGate) + CandidateBiases[index];
+
+            var candidateInput = Mutliply(CandidateWeights, inputs, index) + (NodeValues[index] * CandidateRecurrentWeights[index] * forgetGate);
+            if (UseBias)
+            {
+                candidateInput += CandidateBiases[index];
+            }
             var candidate = Activation.Apply(candidateInput);
             NodeValues[index] = (1 - forgetGate) * NodeValues[index] + forgetGate * candidate;
         }

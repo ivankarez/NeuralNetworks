@@ -62,6 +62,33 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         }
 
         [Test]
+        public void TestBuild_WithoutBias()
+        {
+            var layer = NN.Layers.GRU(NN.Size.Of(3),
+                kernelInitializer: NN.Initializers.Constant(1),
+                recurrentInitializer: NN.Initializers.Constant(2),
+                useBias: false);
+
+            layer.Build(NN.Size.Of(2));
+
+            layer.ForgetGateWeights.ShouldOnlyContain(1f);
+            layer.CandidateWeights.ShouldOnlyContain(1f);
+            layer.NodeValues.ShouldOnlyContain(0f);
+            layer.ForgetRecurrentWeights.ShouldOnlyContain(2f);
+            layer.CandidateRecurrentWeights.ShouldOnlyContain(2f);
+            layer.ForgetBiases.Should().BeNull();
+            layer.CandidateBiases.Should().BeNull();
+
+            layer.Parameters.ShouldContain2D("forgetGateWeights").Should().BeEquivalentTo(layer.ForgetGateWeights);
+            layer.Parameters.ShouldContain2D("candidateWeights").Should().BeEquivalentTo(layer.CandidateWeights);
+            layer.Parameters.ShouldContain1D("forgetRecurrentWeights").Should().BeEquivalentTo(layer.ForgetRecurrentWeights);
+            layer.Parameters.ShouldContain1D("candidateRecurrentWeights").Should().BeEquivalentTo(layer.CandidateRecurrentWeights);
+            layer.Parameters.ShouldNotContain1D("forgetBiases");
+            layer.Parameters.ShouldNotContain1D("candidateBiases");
+            layer.State.ShouldContain1D("nodeValues").Should().BeEquivalentTo(layer.NodeValues);
+        }
+
+        [Test]
         public void TestBuild_NullInputSize()
         {
             var layer = NN.Layers.GRU(NN.Size.Of(3));
@@ -76,7 +103,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.GRU(NN.Size.Of(1),
                 kernelInitializer: NN.Initializers.Constant(1),
                 recurrentInitializer: NN.Initializers.Constant(0),
-                biasInitializer: NN.Initializers.Constant(0));
+                useBias: false);
 
             layer.Build(NN.Size.Of(1));
 
@@ -106,7 +133,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.GRU(NN.Size.Of(1),
                 kernelInitializer: NN.Initializers.Constant(1),
                 recurrentInitializer: NN.Initializers.Constant(1),
-                biasInitializer: NN.Initializers.Constant(0));
+                useBias: false);
 
             layer.Build(NN.Size.Of(1));
             layer.NodeValues[0] = 1f;
@@ -122,7 +149,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.GRU(NN.Size.Of(1),
                 kernelInitializer: NN.Initializers.Constant(1),
                 recurrentInitializer: NN.Initializers.Constant(1),
-                biasInitializer: NN.Initializers.Constant(0));
+                useBias: false);
 
             layer.Build(NN.Size.Of(1));
             layer.NodeValues[0] = 1f;
@@ -149,9 +176,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var input = randomProvider.NextFloats(1f, 100);
             var output = layer.Update(input);
 
-            var expectedOutput = new[] { -0.30068913f, 0.5060353f, -0.34752646f, 
-                -0.46397576f, 0.12575398f, -0.08483865f, 0.11735036f,
-                -0.15973596f, -0.007433379f, -0.13285075f };
+            var expectedOutput = new[] { 0.35179606f, 0.03638931f, -0.34586656f, -0.4565702f,
+                -0.22304979f, 0.17532094f, 0.14402571f, -0.04157398f, 0.068718806f, -0.027657902f };
             output.Should().BeEquivalentTo(expectedOutput);
         }
     }

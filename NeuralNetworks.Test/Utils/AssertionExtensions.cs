@@ -35,5 +35,10 @@ namespace Ivankarez.NeuralNetworks.Test.Utils
             namedVectors.Get2dVectorNames().Should().Contain(vectorName);
             return namedVectors.Get2dVector(vectorName);
         }
+
+        public static void ShouldNotContain1D(this NamedVectors<float> namedVectors, string vectorName)
+        {
+            namedVectors.Get1dVectorNames().Should().NotContain(vectorName);
+        }
     }
 }
