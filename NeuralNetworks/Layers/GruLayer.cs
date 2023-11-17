@@ -36,7 +36,6 @@ namespace Ivankarez.NeuralNetworks.Layers
             IInitializer biasInitializer)
         {
             if (nodeCount == null) throw new ArgumentNullException(nameof(nodeCount));
-            if (nodeCount.TotalSize <= 0) throw new ArgumentOutOfRangeException(nameof(nodeCount.TotalSize), "Must be bigger than 0");
 
             OutputSize = nodeCount ?? throw new ArgumentNullException(nameof(nodeCount));
             Activation = activation ?? throw new ArgumentNullException(nameof(activation));
@@ -50,7 +49,6 @@ namespace Ivankarez.NeuralNetworks.Layers
         public void Build(ISize inputSize)
         {
             if (inputSize == null) throw new ArgumentNullException(nameof(inputSize));
-            if (inputSize.TotalSize <= 0) throw new ArgumentOutOfRangeException(nameof(inputSize.TotalSize), "Must be bigger than 0");
 
             var inputs = inputSize.TotalSize;
             var nodes = OutputSize.TotalSize;
