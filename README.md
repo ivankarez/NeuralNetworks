@@ -69,6 +69,7 @@ This is a simple list of available features of this package. If you look for ava
 - 1 dim pooling layer (min, max, average, sum)
 - 2 dim pooling layer (min, max, average, sum)
 - GRU Layer (using the "Minimal gated unit" version)
+- Dropout Layer
 
 ### [Activations](https://github.com/ivankarez/NeuralNetworks/blob/main/NeuralNetworks/Api/ActivationsApi.cs)
 - Linear
