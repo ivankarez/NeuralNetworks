@@ -85,5 +85,10 @@ namespace Ivankarez.NeuralNetworks.RandomGeneration
         {
             return (int)random.NextFloat(min, max);
         }
+
+        public static bool NextBool(this IRandomProvider random, float probability)
+        {
+            return random.NextFloat() < probability;
+        }
     }
 }

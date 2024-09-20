@@ -132,5 +132,18 @@ namespace Ivankarez.NeuralNetworks.Api
 
             return new GruLayer(nodeCount, activation, recurrentActivation, useBias, kernelInitializer, recurrentInitializer, biasInitializer);
         }
+
+        /// <summary>
+        /// Creates and returns a Dropout Layer with the specified dropout rate.
+        /// </summary>
+        /// <param name="dropoutRate">The rate at which to drop out nodes in the layer.</param>"
+        /// <param name="randomProvider">The random provider to use for generating random values. Defaults to NN.Random.Default().</param>
+        /// <returns>A Dropout Layer instance configured with the specified parameters.</returns>
+        public DropoutLayer Dropout(float dropoutRate, IRandomProvider randomProvider = null)
+        {
+            randomProvider ??= NN.Random.Default();
+
+            return new DropoutLayer(dropoutRate, randomProvider);
+        }
     }
 }
