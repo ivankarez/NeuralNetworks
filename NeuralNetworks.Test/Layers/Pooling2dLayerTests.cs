@@ -14,9 +14,12 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = new Pooling2dLayer((2, 2), (1, 1), PoolingType.Max);
             layer.Build(NN.Size.Of(3, 3));
-            layer.State.Get1dVector("nodeValues").Should().HaveCount(4);
-            layer.Parameters.Get1dVectorNames().Should().BeEmpty();
-            layer.Parameters.Get2dVectorNames().Should().BeEmpty();
+
+            layer.OutputSize.Should().BeOfType<Size2D>();
+            var outputSize = layer.OutputSize as Size2D;
+            outputSize.Dimensions.Should().Be(2);
+            outputSize.Width.Should().Be(2);
+            outputSize.Height.Should().Be(2);
         }
 
         [Test]

@@ -26,9 +26,6 @@ namespace Ivankarez.NeuralNetworks.Layers
             Stride = stride ?? throw new ArgumentNullException(nameof(stride));
             PoolingType = poolingType;
             pooling = GetPooling();
-
-            Parameters = new NamedVectors<float>();
-            State = new NamedVectors<float>();
         }
 
         public void Build(ISize inputSize)
@@ -40,8 +37,6 @@ namespace Ivankarez.NeuralNetworks.Layers
             nodeValuesHeight = ConvolutionUtils.CalculateOutputSize(InputSize.Height, WindowSize.Height, Stride.Vertical);
             OutputSize = new Size2D(nodeValuesWidth, nodeValuesHeight);
             nodeValues = new float[OutputSize.TotalSize];
-
-            State.Add("nodeValues", nodeValues);
         }
 
         public float[] Update(float[] inputValues)
