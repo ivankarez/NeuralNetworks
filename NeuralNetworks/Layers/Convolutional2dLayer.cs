@@ -18,11 +18,12 @@ namespace Ivankarez.NeuralNetworks.Layers
         public IInitializer KernelInitializer { get; }
         public IInitializer BiasInitializer { get; }
 
-        private float[] nodeValues;
-        private float[] biases;
-        private float[,] filter;
+        public float[] Biases { get; set; }
+        public float[][] Filter { get; set; }
+
         private int outputWidth;
         private int outputHeight;
+        private float[] nodeValues;
 
         public Convolutional2dLayer(Size2D filterSize, Stride2D stride,
             bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
@@ -47,15 +48,11 @@ namespace Ivankarez.NeuralNetworks.Layers
             outputHeight = ConvolutionUtils.CalculateOutputSize(InputSize.Height, FilterSize.Height, Stride.Vertical);
             OutputSize = new Size2D(outputWidth, outputHeight);
             nodeValues = new float[OutputSize.TotalSize];
-            filter = KernelInitializer.GenerateValueMatrix(inputSize.TotalSize, OutputSize.TotalSize, FilterSize.Width, FilterSize.Height);
+            Filter = KernelInitializer.GenerateValue2D(inputSize.TotalSize, OutputSize.TotalSize, FilterSize.Width, FilterSize.Height);
             if (UseBias)
             {
-                biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
-                Parameters.Add("biases", biases);
+                Biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
             }
-
-            State.Add("nodeValues", nodeValues);
-            Parameters.Add("filter", filter);
         }
 
         public float[] Update(float[] inputValues)
@@ -65,19 +62,20 @@ namespace Ivankarez.NeuralNetworks.Layers
                 for (int nodeY = 0; nodeY < outputHeight; nodeY += 1)
                 {
                     var nodeValue = 0f;
-                    for (int fx = 0; fx < filter.GetLength(0); fx += 1)
+                    for (int fx = 0; fx < Filter.Length; fx += 1)
                     {
-                        for (int fy = 0; fy < filter.GetLength(1); fy += 1)
+                        var filterRow = Filter[fx];
+                        for (int fy = 0; fy < filterRow.Length; fy += 1)
                         {
                             var inputX = nodeX * Stride.Horizontal + fx;
                             var inputY = nodeY * Stride.Vertical + fy;
-                            nodeValue += inputValues[inputX * InputSize.Width + inputY] * filter[fx, fy];
+                            nodeValue += inputValues[inputX * InputSize.Width + inputY] * Filter[fx][fy];
                         }
                     }
                     var nodeIndex = nodeX * outputHeight + nodeY;
                     if (UseBias)
                     {
-                        nodeValue += biases[nodeIndex];
+                        nodeValue += Biases[nodeIndex];
                     }
                     nodeValues[nodeIndex] = nodeValue;
                 }

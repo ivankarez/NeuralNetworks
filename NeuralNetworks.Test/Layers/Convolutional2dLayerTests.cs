@@ -32,7 +32,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.Conv2D((2, 2));
             layer.Build(NN.Size.Of(3, 3));
             layer.OutputSize.Should().Be(NN.Size.Of(2, 2));
-            layer.Parameters.Get1dVector("biases").Should().HaveCount(4);
+            layer.Biases.Should().HaveCount(4);
         }
 
         [Test]
@@ -40,8 +40,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv2D((2, 2), kernelInitializer: new ConstantInitializer(3f), biasInitializer: new ConstantInitializer(2));
             layer.Build(NN.Size.Of(3, 3));
-            layer.Parameters.Get2dVector("filter").Should().BeEquivalentTo(new float[,] { { 3, 3 }, { 3, 3 } });
-            layer.Parameters.Get1dVector("biases").Should().OnlyContain(v => v == 2);
+            layer.Filter.Should().BeEquivalentTo(new float[][] { new float[] { 3, 3 }, new float[] { 3, 3 } });
+            layer.Biases.Should().OnlyContain(v => v == 2);
         }
 
         [Test]
@@ -49,7 +49,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv2D((2, 2), useBias: false);
             layer.Build(NN.Size.Of(3, 3));
-            layer.State.Get1dVector("nodeValues").Should().HaveCount(4);
+
+            var result = layer.Update(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+
+            result.Should().HaveCount(4);
         }
 
         [Test]
@@ -67,7 +70,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.Conv2D((2, 2), useBias: false);
             layer.Build(NN.Size.Of(3, 3));
 
-            layer.Parameters.Get2dVector("filter").Fill(new float[,] { { -1, 2, }, { -2, 3 } });
+            layer.Filter.Fill(new float[,] { { -1, 2, }, { -2, 3 } });
             var input = new float[] { 1, 2, 3, -1, -2, -3, 1, 2, 3 };
             var output = layer.Update(input);
             var expected = new float[] { -1, -1, 1, 1 };
@@ -80,7 +83,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.Conv2D((3, 3), useBias: false);
             layer.Build(NN.Size.Of(3, 3));
 
-            layer.Parameters.Get2dVector("filter").Fill(new float[,] { { 1, 1, 1 }, { 2, 2, 2 }, { 3, 3, 3 } });
+            layer.Filter.Fill(new float[,] { { 1, 1, 1 }, { 2, 2, 2 }, { 3, 3, 3 } });
             var input = new float[] { 1, 2, 3, -1, -2, -3, 1, 2, 3 };
             var output = layer.Update(input);
             var expected = new float[] { 12 };
@@ -94,7 +97,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             layer.Build(NN.Size.Of(90, 90));
 
             var filter = RandomTestUtils.CreateRandomFloatMatrix(11, 11, 0);
-            layer.Parameters.Get2dVector("filter").Fill(filter);
+            layer.Filter.Fill(filter);
             var output = layer.Update(new float[90 * 90]);
             var expected = new float[] { 12 };
             output.Should().OnlyContain(v => v == 0);
