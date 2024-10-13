@@ -28,5 +28,20 @@ namespace Ivankarez.NeuralNetworks.Test.TestUtils
             }
             return values;
         }
+
+        public static float[][] CreateRandomFloatMatrix2(int width, int height, int seed)
+        {
+            var random = new Random(seed);
+            var values = new float[width][];
+            for (int i = 0; i < width; i++)
+            {
+                values[i] = new float[height];
+                for (int j = 0; j < height; j++)
+                {
+                    values[i][j] = (float)random.NextDouble();
+                }
+            }
+            return values;
+        }
     }
 }

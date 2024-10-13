@@ -2,7 +2,6 @@
 using Ivankarez.NeuralNetworks.Api;
 using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
 using Ivankarez.NeuralNetworks.Test.TestUtils;
-using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
 using System;
 
@@ -70,7 +69,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.Conv2D((2, 2), useBias: false);
             layer.Build(NN.Size.Of(3, 3));
 
-            layer.Filter.Fill(new float[,] { { -1, 2, }, { -2, 3 } });
+            layer.Filter = new float[][] { new float[] { -1, 2, }, new float[] { -2, 3 } };
             var input = new float[] { 1, 2, 3, -1, -2, -3, 1, 2, 3 };
             var output = layer.Update(input);
             var expected = new float[] { -1, -1, 1, 1 };
@@ -83,7 +82,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.Conv2D((3, 3), useBias: false);
             layer.Build(NN.Size.Of(3, 3));
 
-            layer.Filter.Fill(new float[,] { { 1, 1, 1 }, { 2, 2, 2 }, { 3, 3, 3 } });
+            layer.Filter = new float[][] { new float[] { 1, 1, 1 }, new float[] { 2, 2, 2 }, new float[] { 3, 3, 3 } };
             var input = new float[] { 1, 2, 3, -1, -2, -3, 1, 2, 3 };
             var output = layer.Update(input);
             var expected = new float[] { 12 };
@@ -96,8 +95,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             var layer = NN.Layers.Conv2D((11, 11), (5, 5), false);
             layer.Build(NN.Size.Of(90, 90));
 
-            var filter = RandomTestUtils.CreateRandomFloatMatrix(11, 11, 0);
-            layer.Filter.Fill(filter);
+            var filter = RandomTestUtils.CreateRandomFloatMatrix2(11, 11, 0);
+            layer.Filter = filter;
             var output = layer.Update(new float[90 * 90]);
             var expected = new float[] { 12 };
             output.Should().OnlyContain(v => v == 0);
