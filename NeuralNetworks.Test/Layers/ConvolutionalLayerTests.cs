@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Ivankarez.NeuralNetworks.Api;
 using Ivankarez.NeuralNetworks.RandomGeneration.Initializers;
-using Ivankarez.NeuralNetworks.Utils;
 using NUnit.Framework;
 using System;
 
@@ -16,8 +15,9 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
 
             layer.Build(NN.Size.Of(3));
 
-            layer.Parameters.Get1dVector("filter").Should().HaveCount(3);
-            layer.State.Get1dVector("nodeValues").Should().HaveCount(1);
+            layer.Filter.Should().HaveCount(3);
+            layer.OutputSize.Dimensions.Should().Be(1);
+            layer.OutputSize.TotalSize.Should().Be(1);
         }
 
         [Test]
@@ -27,9 +27,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
 
             layer.Build(NN.Size.Of(3));
 
-            layer.Parameters.Get1dVector("filter").Should().HaveCount(3);
-            layer.State.Get1dVector("nodeValues").Should().HaveCount(1);
-            layer.Parameters.Get1dVector("biases").Should().HaveCount(1);
+            layer.Filter.Should().HaveCount(3);
+            layer.OutputSize.Dimensions.Should().Be(1);
+            layer.OutputSize.TotalSize.Should().Be(1);
+            layer.Biases.Should().HaveCount(1);
         }
 
         [Test]
@@ -37,8 +38,8 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv1D(3, kernelInitializer: new ConstantInitializer(3f), biasInitializer: new ConstantInitializer(2f));
             layer.Build(NN.Size.Of(3));
-            layer.Parameters.Get1dVector("filter").Should().AllBeEquivalentTo(3);
-            layer.Parameters.Get1dVector("biases").Should().AllBeEquivalentTo(2);
+            layer.Filter.Should().AllBeEquivalentTo(3);
+            layer.Biases.Should().AllBeEquivalentTo(2);
         }
 
         [Test]
@@ -63,7 +64,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv1D(3, useBias: false);
             layer.Build(NN.Size.Of(3));
-            layer.Parameters.Get1dVector("filter").Fill(1, 2, -1);
+            layer.Filter = new float[] { 1, 2, -1 };
 
             var result = layer.Update(new float[] { 3, -5, -4 });
 
@@ -76,7 +77,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv1D(2, useBias: false);
             layer.Build(NN.Size.Of(6));
-            layer.Parameters.Get1dVector("filter").Fill(1, -2);
+            layer.Filter = new float[] { 1, -2 };
 
             var result = layer.Update(new float[] { 3, -5, -4, 2, 3, 1 });
 
@@ -93,7 +94,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv1D(1, useBias: false);
             layer.Build(NN.Size.Of(3));
-            layer.Parameters.Get1dVector("filter").Fill(.5f);
+            layer.Filter = new float[] { .5f };
 
             var result = layer.Update(new float[] { 3, -5, 0 });
 
@@ -119,8 +120,10 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
         {
             var layer = NN.Layers.Conv1D(2, stride: 2, useBias: false);
             layer.Build(NN.Size.Of(6));
-            layer.Parameters.Get1dVector("filter").Fill(1, -2);
+            layer.Filter = new float[] { 1, -2 };
+
             var result = layer.Update(new[] { 3f, -5f, -4f, 2f, 3f, 1f });
+
             result.Should().BeEquivalentTo(new[] { 13f, -8f, 1f });
         }
     }

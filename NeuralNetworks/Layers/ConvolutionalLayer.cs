@@ -16,10 +16,10 @@ namespace Ivankarez.NeuralNetworks.Layers
         public IInitializer BiasInitializer { get; }
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
+        public float[] Filter { get; set; }
+        public float[] Biases { get; set; }
 
         private float[] nodeValues;
-        private float[] filter;
-        private float[] biases;
 
         public ConvolutionalLayer(int filterSize, int stride, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
@@ -30,8 +30,6 @@ namespace Ivankarez.NeuralNetworks.Layers
             UseBias = useBias;
             KernelInitializer = kernelInitializer ?? throw new ArgumentNullException(nameof(kernelInitializer));
             BiasInitializer = biasInitializer ?? throw new ArgumentNullException(nameof(biasInitializer));
-            Parameters = new NamedVectors<float>();
-            State = new NamedVectors<float>();
         }
 
         public void Build(ISize inputSize)
@@ -40,15 +38,11 @@ namespace Ivankarez.NeuralNetworks.Layers
             OutputSize = new Size1D(ConvolutionUtils.CalculateOutputSize(inputSize.TotalSize, FilterSize, Stride));
 
             nodeValues = new float[OutputSize.TotalSize];
-            filter = KernelInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, FilterSize);
+            Filter = KernelInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, FilterSize);
             if (UseBias)
             {
-                biases = BiasInitializer.GenerateValues(OutputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
-                Parameters.Add("biases", biases);
+                Biases = BiasInitializer.GenerateValues(OutputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
             }
-
-            State.Add("nodeValues", nodeValues);
-            Parameters.Add("filter", filter);
         }
 
         public float[] Update(float[] inputValues)
@@ -58,7 +52,7 @@ namespace Ivankarez.NeuralNetworks.Layers
                 var value = DotProductWithFilter(inputValues, kernelIndex * Stride);
                 if (UseBias)
                 {
-                    value += biases[kernelIndex];
+                    value += Biases[kernelIndex];
                 }
                 nodeValues[kernelIndex] = value;
             }
@@ -71,7 +65,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             var sum = 0f;
             for (int i = 0; i < FilterSize; i++)
             {
-                sum += inputValue[windowStart + i] * filter[i];
+                sum += inputValue[windowStart + i] * Filter[i];
             }
 
             return sum;
