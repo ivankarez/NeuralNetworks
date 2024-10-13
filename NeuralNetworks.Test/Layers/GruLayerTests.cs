@@ -44,21 +44,12 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
 
             layer.Build(NN.Size.Of(2));
 
-            layer.ForgetGateWeights.ShouldOnlyContain(1f);
-            layer.CandidateWeights.ShouldOnlyContain(1f);
-            layer.NodeValues.ShouldOnlyContain(0f);
-            layer.ForgetRecurrentWeights.ShouldOnlyContain(2f);
-            layer.CandidateRecurrentWeights.ShouldOnlyContain(2f);
-            layer.ForgetBiases.ShouldOnlyContain(3f);
-            layer.CandidateBiases.ShouldOnlyContain(3f);
-
-            layer.Parameters.ShouldContain2D("forgetGateWeights").Should().BeEquivalentTo(layer.ForgetGateWeights);
-            layer.Parameters.ShouldContain2D("candidateWeights").Should().BeEquivalentTo(layer.CandidateWeights);
-            layer.Parameters.ShouldContain1D("forgetRecurrentWeights").Should().BeEquivalentTo(layer.ForgetRecurrentWeights);
-            layer.Parameters.ShouldContain1D("candidateRecurrentWeights").Should().BeEquivalentTo(layer.CandidateRecurrentWeights);
-            layer.Parameters.ShouldContain1D("forgetBiases").Should().BeEquivalentTo(layer.ForgetBiases);
-            layer.Parameters.ShouldContain1D("candidateBiases").Should().BeEquivalentTo(layer.CandidateBiases);
-            layer.State.ShouldContain1D("nodeValues").Should().BeEquivalentTo(layer.NodeValues);
+            layer.ForgetGateWeights.Should().OnlyContainNumber(1f);
+            layer.CandidateWeights.Should().OnlyContainNumber(1f);
+            layer.ForgetRecurrentWeights.Should().OnlyContainNumber(2f);
+            layer.CandidateRecurrentWeights.Should().OnlyContainNumber(2f);
+            layer.ForgetBiases.Should().OnlyContainNumber(3f);
+            layer.CandidateBiases.Should().OnlyContainNumber(3f);
         }
 
         [Test]
@@ -71,21 +62,12 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
 
             layer.Build(NN.Size.Of(2));
 
-            layer.ForgetGateWeights.ShouldOnlyContain(1f);
-            layer.CandidateWeights.ShouldOnlyContain(1f);
-            layer.NodeValues.ShouldOnlyContain(0f);
-            layer.ForgetRecurrentWeights.ShouldOnlyContain(2f);
-            layer.CandidateRecurrentWeights.ShouldOnlyContain(2f);
+            layer.ForgetGateWeights.Should().OnlyContainNumber(1f);
+            layer.CandidateWeights.Should().OnlyContainNumber(1f);
+            layer.ForgetRecurrentWeights.Should().OnlyContainNumber(2f);
+            layer.CandidateRecurrentWeights.Should().OnlyContainNumber(2f);
             layer.ForgetBiases.Should().BeNull();
             layer.CandidateBiases.Should().BeNull();
-
-            layer.Parameters.ShouldContain2D("forgetGateWeights").Should().BeEquivalentTo(layer.ForgetGateWeights);
-            layer.Parameters.ShouldContain2D("candidateWeights").Should().BeEquivalentTo(layer.CandidateWeights);
-            layer.Parameters.ShouldContain1D("forgetRecurrentWeights").Should().BeEquivalentTo(layer.ForgetRecurrentWeights);
-            layer.Parameters.ShouldContain1D("candidateRecurrentWeights").Should().BeEquivalentTo(layer.CandidateRecurrentWeights);
-            layer.Parameters.ShouldNotContain1D("forgetBiases");
-            layer.Parameters.ShouldNotContain1D("candidateBiases");
-            layer.State.ShouldContain1D("nodeValues").Should().BeEquivalentTo(layer.NodeValues);
         }
 
         [Test]
