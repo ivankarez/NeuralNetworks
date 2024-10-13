@@ -18,15 +18,12 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             DropoutRate = dropoutRate;
             RandomProvider = randomProvider;
-            Parameters = new NamedVectors<float>();
-            State = new NamedVectors<float>();
         }
 
         public void Build(ISize inputSize)
         {
             OutputSize = inputSize;
             nodeValues = new float[OutputSize.TotalSize];
-            State.Add("nodeValues", nodeValues);
         }
 
         public float[] Update(float[] inputValues)
