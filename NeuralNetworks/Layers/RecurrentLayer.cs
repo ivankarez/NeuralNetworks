@@ -38,7 +38,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public void Build(ISize inputSize)
         {
-            weights = KernelInitializer.GenerateValues2d(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
+            weights = KernelInitializer.GenerateValueMatrix(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
             recurrentWeights = RecurrentInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
             nodeValues = new float[OutputSize.TotalSize];
             if (useBias)

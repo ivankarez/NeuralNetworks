@@ -1,4 +1,6 @@
-﻿using Ivankarez.NeuralNetworks.Utils;
+﻿using Ivankarez.NeuralNetworks.Layers;
+using Ivankarez.NeuralNetworks.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace Ivankarez.NeuralNetworks
@@ -11,7 +13,7 @@ namespace Ivankarez.NeuralNetworks
         /// </summary>
         /// <param name="model">The LayeredNetworkModel to extract parameters from.</param>
         /// <returns>An array containing all the flattened trainable parameters.</returns>
-        public static float[] GetParametersFlat(this LayeredNetworkModel model)
+        public static float[] GetParametersFlat_REMOVE(this LayeredNetworkModel model)
         {
             var result = new List<float>();
             foreach (var layer in model.Layers)
@@ -24,6 +26,30 @@ namespace Ivankarez.NeuralNetworks
                 foreach (var paramName in layer.Parameters.Get2dVectorNames())
                 {
                     result.AddRange(layer.Parameters.Get2dVector(paramName));
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        public static float[] GetParametersFlat(this LayeredNetworkModel model)
+        {
+            // TODO: Implement other types of layers
+            var result = new List<float>();
+            foreach (var layer in model.Layers)
+            {
+                if (layer is DenseLayer)
+                {
+                    var denseLayer = layer as DenseLayer;
+                    result.AddRange(denseLayer.Weights);
+                    if (denseLayer.Biases != null)
+                    {
+                        result.AddRange(denseLayer.Biases);
+                    }
+                } 
+                else
+                {
+                    throw new NotImplementedException($"GetParametersFlat doesn't support layer of type {layer.GetType().Name}");
                 }
             }
 

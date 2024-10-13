@@ -34,5 +34,29 @@ namespace Ivankarez.NeuralNetworks.Utils
             }
             return array;
         }
+
+        public static T[][] Fill<T>(this T[][] array, T[,] values)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                for (int j = 0; j < array[i].Length; j++)
+                {
+                    array[i][j] = values[i, j];
+                }
+            }
+            return array;
+        }
+
+        public static T[][] Fill<T>(this T[][] array, params T[] values)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                for (int j = 0; j < array[i].Length; j++)
+                {
+                    array[i][j] = values[i * array[i].Length + j];
+                }
+            }
+            return array;
+        }
     }
 }

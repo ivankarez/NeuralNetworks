@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Collections;
 using Ivankarez.NeuralNetworks.Values;
 
 namespace Ivankarez.NeuralNetworks.Test.Utils
@@ -14,6 +15,16 @@ namespace Ivankarez.NeuralNetworks.Test.Utils
                     values[i, j].Should().Be(value);
                 }
             }
+        }
+
+        public static AndConstraint<GenericCollectionAssertions<float[]>> OnlyContainNumber(this GenericCollectionAssertions<float[]> assertion, float value)
+        {
+            return assertion.AllSatisfy(v => v.Should().OnlyContain(n => n==value));
+        }
+
+        public static AndConstraint<GenericCollectionAssertions<float>> OnlyContainNumber(this GenericCollectionAssertions<float> assertion, float value)
+        {
+            return assertion.OnlyContain(n => n == value);
         }
 
         public static void ShouldOnlyContain(this float[] values, float value)

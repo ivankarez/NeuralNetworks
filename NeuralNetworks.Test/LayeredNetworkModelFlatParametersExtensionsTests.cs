@@ -10,7 +10,7 @@ namespace Ivankarez.NeuralNetworks.Test
         public void Test_GetParametersFlat_HappyPath()
         {
             var model = NN.Models.Layered(2, NN.Layers.Dense(2), NN.Layers.Dense(3));
-            var parameters = model.GetParametersFlat();
+            var parameters = model.GetParametersFlat_REMOVE();
 
             parameters.Should().HaveCount(2 * 2 + 2 * 3 + 5); // Layer weights and 5 biases
         }

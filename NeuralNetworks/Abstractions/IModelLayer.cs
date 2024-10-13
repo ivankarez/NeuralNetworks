@@ -6,11 +6,14 @@ namespace Ivankarez.NeuralNetworks.Abstractions
     {
         public ISize OutputSize { get; }
 
+        // TODO: Remove these
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
 
         public void Build(ISize inputSize);
 
         public float[] Update(float[] inputValues);
+
+        // TODO: Add paramter count property
     }
 }

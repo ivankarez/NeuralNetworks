@@ -47,7 +47,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             outputHeight = ConvolutionUtils.CalculateOutputSize(InputSize.Height, FilterSize.Height, Stride.Vertical);
             OutputSize = new Size2D(outputWidth, outputHeight);
             nodeValues = new float[OutputSize.TotalSize];
-            filter = KernelInitializer.GenerateValues2d(inputSize.TotalSize, OutputSize.TotalSize, FilterSize.Width, FilterSize.Height);
+            filter = KernelInitializer.GenerateValueMatrix(inputSize.TotalSize, OutputSize.TotalSize, FilterSize.Width, FilterSize.Height);
             if (UseBias)
             {
                 biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);

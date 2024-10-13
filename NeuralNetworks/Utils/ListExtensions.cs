@@ -11,5 +11,13 @@ namespace Ivankarez.NeuralNetworks.Utils
                 list.Add(item);
             }
         }
+
+        public static void AddRange<T>(this List<T> list, T[][] items)
+        {
+            foreach (var subarray in items)
+            {
+                list.AddRange(subarray);
+            }
+        }
     }
 }

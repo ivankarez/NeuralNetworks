@@ -53,10 +53,10 @@ namespace Ivankarez.NeuralNetworks.Layers
             var inputs = inputSize.TotalSize;
             var nodes = OutputSize.TotalSize;
 
-            ForgetGateWeights = KernelInitializer.GenerateValues2d(inputs, nodes, nodes, inputs);
+            ForgetGateWeights = KernelInitializer.GenerateValueMatrix(inputs, nodes, nodes, inputs);
             ForgetRecurrentWeights = RecurrentInitializer.GenerateValues(inputs, nodes, nodes);
 
-            CandidateWeights = KernelInitializer.GenerateValues2d(inputs, nodes, nodes, inputs);
+            CandidateWeights = KernelInitializer.GenerateValueMatrix(inputs, nodes, nodes, inputs);
             CandidateRecurrentWeights = RecurrentInitializer.GenerateValues(inputs, nodes, nodes);
 
             NodeValues = new float[nodes];
