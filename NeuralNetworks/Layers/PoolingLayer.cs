@@ -13,8 +13,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         public PoolingType Type { get; }
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
-
-        private float[] nodeValues;
+        public float[] NodeValues { get; set; }
 
         public PoolingLayer(int window, int stride, PoolingType type)
         {
@@ -24,42 +23,38 @@ namespace Ivankarez.NeuralNetworks.Layers
             Window = window;
             Stride = stride;
             Type = type;
-
-            Parameters = new NamedVectors<float>();
-            State = new NamedVectors<float>();
         }
 
         public void Build(ISize inputSize)
         {
             OutputSize = new Size1D(ConvolutionUtils.CalculateOutputSize(inputSize.TotalSize, Window, Stride));
-            nodeValues = new float[OutputSize.TotalSize];
-            State.Add("nodeValues", nodeValues);
+            NodeValues = new float[OutputSize.TotalSize];
         }
 
         public float[] Update(float[] inputValues)
         {
-            for (int nodeIndex = 0; nodeIndex < nodeValues.Length; nodeIndex++)
+            for (int nodeIndex = 0; nodeIndex < NodeValues.Length; nodeIndex++)
             {
                 var startIndex = nodeIndex * Stride;
                 if (Type == PoolingType.Max)
                 {
-                    nodeValues[nodeIndex] = PoolByMaximum(startIndex, inputValues);
+                    NodeValues[nodeIndex] = PoolByMaximum(startIndex, inputValues);
                 }
                 else if (Type == PoolingType.Average)
                 {
-                    nodeValues[nodeIndex] = PoolByAverage(startIndex, inputValues);
+                    NodeValues[nodeIndex] = PoolByAverage(startIndex, inputValues);
                 }
                 else if (Type == PoolingType.Min)
                 {
-                    nodeValues[nodeIndex] = PoolByMinimum(startIndex, inputValues);
+                    NodeValues[nodeIndex] = PoolByMinimum(startIndex, inputValues);
                 }
                 else if (Type == PoolingType.Sum)
                 {
-                    nodeValues[nodeIndex] = PoolBySum(startIndex, inputValues);
+                    NodeValues[nodeIndex] = PoolBySum(startIndex, inputValues);
                 }
             }
 
-            return nodeValues;
+            return NodeValues;
         }
 
         private float PoolByMaximum(int start, float[] inputValues)
