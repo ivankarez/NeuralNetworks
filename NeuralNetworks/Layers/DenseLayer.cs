@@ -15,11 +15,11 @@ namespace Ivankarez.NeuralNetworks.Layers
         public NamedVectors<float> State { get; }
 
         public IActivation Activation { get; set; }
+        public float[] Output { get; private set; }
         public float[][] Weights { get; private set; }
         public float[] Biases { get; private set; }
         public bool UseBias;
 
-        private float[] values;
 
         public DenseLayer(int nodeCount, IActivation activation, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
@@ -37,7 +37,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         public void Build(ISize inputSize)
         {
             Weights = KernelInitializer.GenerateValue2D(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
-            values = new float[OutputSize.TotalSize];
+            Output = new float[OutputSize.TotalSize];
             if (UseBias)
             {
                 Biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
@@ -51,7 +51,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 UpdateNode(nodeIndex, inputValues);
             }
-            return values;
+            return Output;
         }
 
         private void UpdateNode(int nodeIndex, float[] inputValues)
@@ -65,7 +65,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 nodeValue += Biases[nodeIndex];
             }
-            values[nodeIndex] = Activation.Apply(nodeValue);
+            Output[nodeIndex] = Activation.Apply(nodeValue);
         }
     }
 }
