@@ -34,5 +34,10 @@
         /// Gets an instance of the SizeApi class, which provides access to size objects in different dimensions.
         /// </summary>
         public static SizeApi Size { get; } = new SizeApi();
+
+        /// <summary>
+        /// Gets an instance of the TensorsApi class, which provides access to tensor operations.
+        /// </summary>
+        public static TensorApi Tensor { get; } = new TensorApi();
     }
 }
