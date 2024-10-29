@@ -113,7 +113,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
 
             layer.Build(NN.Size.Of(inputSize));
 
-            layer.NodeValues.Should().HaveCount(expectedNodeCount);
+            layer.Output.Should().HaveCount(expectedNodeCount);
             layer.OutputSize.Should().Be(NN.Size.Of(expectedNodeCount));
         }
     }

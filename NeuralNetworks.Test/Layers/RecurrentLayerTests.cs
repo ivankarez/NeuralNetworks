@@ -25,7 +25,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             result[0].Should().Be(1f);
             result[1].Should().Be(-1f);
 
-            layer.NodeValues.Should().BeSameAs(result);
+            layer.Output.Should().BeSameAs(result);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             result[0].Should().Be(1.5f);
             result[1].Should().Be(-.5f);
 
-            layer.NodeValues.Should().BeSameAs(result);
+            layer.Output.Should().BeSameAs(result);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
             result[0].Should().Be(11f);
             result[1].Should().Be(9f);
 
-            layer.NodeValues.Should().BeSameAs(result);
+            layer.Output.Should().BeSameAs(result);
         }
 
         [Test]

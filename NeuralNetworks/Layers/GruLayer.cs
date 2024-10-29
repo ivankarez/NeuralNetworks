@@ -25,8 +25,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         public float[] CandidateRecurrentWeights { get; set; }
         public float[] ForgetBiases { get; set; }
         public float[] CandidateBiases { get; set; }
-
-        public float[] NodeValues { get; set; }
+        public float[] Output { get; set; }
 
         public GruLayer(Size1D nodeCount,
             IActivation activation,
@@ -60,7 +59,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             CandidateWeights = KernelInitializer.GenerateValue2D(inputs, nodes, nodes, inputs);
             CandidateRecurrentWeights = RecurrentInitializer.GenerateValues(inputs, nodes, nodes);
 
-            NodeValues = new float[nodes];
+            Output = new float[nodes];
 
             if (UseBias)
             {
@@ -76,25 +75,25 @@ namespace Ivankarez.NeuralNetworks.Layers
                 UpdateCell(nodeIndex, inputValues);
             }
 
-            return NodeValues;
+            return Output;
         }
 
         private void UpdateCell(int index, float[] inputs)
         {
-            var forgetGateInput = Mutliply(ForgetGateWeights[index], inputs) + (NodeValues[index] * ForgetRecurrentWeights[index]);
+            var forgetGateInput = Mutliply(ForgetGateWeights[index], inputs) + (Output[index] * ForgetRecurrentWeights[index]);
             if (UseBias)
             {
                 forgetGateInput += ForgetBiases[index];
             }
             var forgetGate = RecurrentActivation.Apply(forgetGateInput);
 
-            var candidateInput = Mutliply(CandidateWeights[index], inputs) + (NodeValues[index] * CandidateRecurrentWeights[index] * forgetGate);
+            var candidateInput = Mutliply(CandidateWeights[index], inputs) + (Output[index] * CandidateRecurrentWeights[index] * forgetGate);
             if (UseBias)
             {
                 candidateInput += CandidateBiases[index];
             }
             var candidate = Activation.Apply(candidateInput);
-            NodeValues[index] = (1 - forgetGate) * NodeValues[index] + forgetGate * candidate;
+            Output[index] = (1 - forgetGate) * Output[index] + forgetGate * candidate;
         }
 
         private float Mutliply(float[] weights, float[] inputs)

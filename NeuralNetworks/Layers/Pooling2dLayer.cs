@@ -7,18 +7,17 @@ namespace Ivankarez.NeuralNetworks.Layers
 {
     public class Pooling2dLayer : IModelLayer
     {
-        public ISize OutputSize { get; private set; }
+        public Size2D OutputSize { get; private set; }
+        ISize IModelLayer.OutputSize => OutputSize;
         public Size2D InputSize { get; set; }
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
         public Size2D WindowSize { get; }
         public Stride2D Stride { get; }
         public PoolingType PoolingType { get; }
+        public float[] Output { get; private set; }
 
         private readonly Func<int, int, float[], float> pooling;
-        private float[] nodeValues;
-        private int nodeValuesWidth;
-        private int nodeValuesHeight;
 
         public Pooling2dLayer(Size2D windowSize, Stride2D stride, PoolingType poolingType)
         {
@@ -33,25 +32,25 @@ namespace Ivankarez.NeuralNetworks.Layers
             if (!(inputSize is Size2D)) throw new ArgumentException($"Input size must be {nameof(Size2D)}", nameof(inputSize));
             InputSize = inputSize as Size2D;
 
-            nodeValuesWidth = ConvolutionUtils.CalculateOutputSize(InputSize.Width, WindowSize.Width, Stride.Horizontal);
-            nodeValuesHeight = ConvolutionUtils.CalculateOutputSize(InputSize.Height, WindowSize.Height, Stride.Vertical);
+            var nodeValuesWidth = ConvolutionUtils.CalculateOutputSize(InputSize.Width, WindowSize.Width, Stride.Horizontal);
+            var nodeValuesHeight = ConvolutionUtils.CalculateOutputSize(InputSize.Height, WindowSize.Height, Stride.Vertical);
             OutputSize = new Size2D(nodeValuesWidth, nodeValuesHeight);
-            nodeValues = new float[OutputSize.TotalSize];
+            Output = new float[OutputSize.TotalSize];
         }
 
         public float[] Update(float[] inputValues)
         {
-            for (int nodeX = 0; nodeX < nodeValuesWidth; nodeX += 1)
+            for (int nodeX = 0; nodeX < OutputSize.Width; nodeX += 1)
             {
-                for (int nodeY = 0; nodeY < nodeValuesHeight; nodeY += 1)
+                for (int nodeY = 0; nodeY < OutputSize.Height; nodeY += 1)
                 {
                     var nodeValue = pooling(nodeX, nodeY, inputValues);
-                    var nodeIndex = nodeX * nodeValuesHeight + nodeY;
-                    nodeValues[nodeIndex] = nodeValue;
+                    var nodeIndex = nodeX * OutputSize.Height + nodeY;
+                    Output[nodeIndex] = nodeValue;
                 }
             }
 
-            return nodeValues;
+            return Output;
         }
 
         private Func<int, int, float[], float> GetPooling()

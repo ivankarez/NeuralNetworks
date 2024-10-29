@@ -18,8 +18,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         public NamedVectors<float> State { get; }
         public float[] Filter { get; set; }
         public float[] Biases { get; set; }
-
-        private float[] nodeValues;
+        public float[] Output { get; private set; }
 
         public ConvolutionalLayer(int filterSize, int stride, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
@@ -37,7 +36,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             if (FilterSize > inputSize.TotalSize) throw new ArgumentException("filterSize cannot be more than the size of the previous layer", nameof(inputSize));
             OutputSize = new Size1D(ConvolutionUtils.CalculateOutputSize(inputSize.TotalSize, FilterSize, Stride));
 
-            nodeValues = new float[OutputSize.TotalSize];
+            Output = new float[OutputSize.TotalSize];
             Filter = KernelInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, FilterSize);
             if (UseBias)
             {
@@ -54,10 +53,10 @@ namespace Ivankarez.NeuralNetworks.Layers
                 {
                     value += Biases[kernelIndex];
                 }
-                nodeValues[kernelIndex] = value;
+                Output[kernelIndex] = value;
             }
 
-            return nodeValues;
+            return Output;
         }
 
         private float DotProductWithFilter(float[] inputValue, int windowStart)

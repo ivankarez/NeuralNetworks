@@ -118,7 +118,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
                 useBias: false);
 
             layer.Build(NN.Size.Of(1));
-            layer.NodeValues[0] = 1f;
+            layer.Output[0] = 1f;
 
             var output = layer.Update(new[] { 1f });
 
@@ -134,7 +134,7 @@ namespace Ivankarez.NeuralNetworks.Test.Layers
                 useBias: false);
 
             layer.Build(NN.Size.Of(1));
-            layer.NodeValues[0] = 1f;
+            layer.Output[0] = 1f;
 
             var input = new[] { 1f };
             var output1 = layer.Update(input).Clone();

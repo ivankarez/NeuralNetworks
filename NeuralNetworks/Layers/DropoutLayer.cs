@@ -11,8 +11,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         public NamedVectors<float> State { get; }
         public float DropoutRate { get; }
         public IRandomProvider RandomProvider { get; }
-
-        private float[] nodeValues;
+        public float[] Output { get; private set; }
 
         public DropoutLayer(float dropoutRate, IRandomProvider randomProvider)
         {
@@ -23,17 +22,17 @@ namespace Ivankarez.NeuralNetworks.Layers
         public void Build(ISize inputSize)
         {
             OutputSize = inputSize;
-            nodeValues = new float[OutputSize.TotalSize];
+            Output = new float[OutputSize.TotalSize];
         }
 
         public float[] Update(float[] inputValues)
         {
             for (int i = 0; i < OutputSize.TotalSize; i++)
             {
-                nodeValues[i] =  RandomProvider.NextBool(DropoutRate) ? inputValues[i] : 0;
+                Output[i] =  RandomProvider.NextBool(DropoutRate) ? inputValues[i] : 0;
             }
 
-            return nodeValues;
+            return Output;
         }
     }
 }

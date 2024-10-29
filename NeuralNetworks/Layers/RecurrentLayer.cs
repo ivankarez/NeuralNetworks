@@ -20,7 +20,7 @@ namespace Ivankarez.NeuralNetworks.Layers
 
         public float[,] Weights { get; set; }
         public float[] RecurrentWeights { get; set; }
-        public float[] NodeValues { get; set; }
+        public float[] Output { get; set; }
         public float[] Biases { get; set; }
 
         public RecurrentLayer(int nodeCount, IActivation activation, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer, IInitializer recurrentInitializer)
@@ -38,7 +38,7 @@ namespace Ivankarez.NeuralNetworks.Layers
         {
             Weights = KernelInitializer.GenerateValueMatrix(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
             RecurrentWeights = RecurrentInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
-            NodeValues = new float[OutputSize.TotalSize];
+            Output = new float[OutputSize.TotalSize];
             if (UseBias)
             {
                 Biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
@@ -51,12 +51,12 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 UpdateNode(nodeIndex, inputValues);
             }
-            return NodeValues;
+            return Output;
         }
 
         private void UpdateNode(int nodeIndex, float[] inputValues)
         {
-            var nodeValue = RecurrentWeights[nodeIndex] * NodeValues[nodeIndex];
+            var nodeValue = RecurrentWeights[nodeIndex] * Output[nodeIndex];
             for (int inputIndex = 0; inputIndex < inputValues.Length; inputIndex++)
             {
                 nodeValue += inputValues[inputIndex] * Weights[nodeIndex, inputIndex];
@@ -65,7 +65,7 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 nodeValue += Biases[nodeIndex];
             }
-            NodeValues[nodeIndex] = Activation.Apply(nodeValue);
+            Output[nodeIndex] = Activation.Apply(nodeValue);
         }
     }
 }
