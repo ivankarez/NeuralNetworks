@@ -15,41 +15,34 @@ namespace Ivankarez.NeuralNetworks.Layers
         public NamedVectors<float> Parameters { get; }
         public NamedVectors<float> State { get; }
 
-        private readonly IActivation activation;
-        private readonly bool useBias;
+        public IActivation Activation { get; set; }
+        public bool UseBias { get; set; }
 
-        private float[,] weights;
-        private float[] recurrentWeights;
-        private float[] nodeValues;
-        private float[] biases;
+        public float[,] Weights { get; set; }
+        public float[] RecurrentWeights { get; set; }
+        public float[] NodeValues { get; set; }
+        public float[] Biases { get; set; }
 
         public RecurrentLayer(int nodeCount, IActivation activation, bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer, IInitializer recurrentInitializer)
         {
             if (nodeCount <= 0) throw new ArgumentOutOfRangeException(nameof(nodeCount), "Must be bigger than zero");
             OutputSize = new Size1D(nodeCount);
-            this.activation = activation ?? throw new ArgumentNullException(nameof(activation));
-            this.useBias = useBias;
+            Activation = activation ?? throw new ArgumentNullException(nameof(activation));
+            UseBias = useBias;
             KernelInitializer = kernelInitializer ?? throw new ArgumentNullException(nameof(kernelInitializer));
             BiasInitializer = biasInitializer ?? throw new ArgumentNullException(nameof(biasInitializer));
             RecurrentInitializer = recurrentInitializer ?? throw new ArgumentNullException(nameof(recurrentInitializer));
-            Parameters = new NamedVectors<float>();
-            State = new NamedVectors<float>();
         }
 
         public void Build(ISize inputSize)
         {
-            weights = KernelInitializer.GenerateValueMatrix(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
-            recurrentWeights = RecurrentInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
-            nodeValues = new float[OutputSize.TotalSize];
-            if (useBias)
+            Weights = KernelInitializer.GenerateValueMatrix(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize, inputSize.TotalSize);
+            RecurrentWeights = RecurrentInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
+            NodeValues = new float[OutputSize.TotalSize];
+            if (UseBias)
             {
-                biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
-                Parameters.Add("biases", biases);
+                Biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
             }
-
-            State.Add("nodeValues", nodeValues);
-            Parameters.Add("weights", weights);
-            Parameters.Add("recurrentWeights", recurrentWeights);
         }
 
         public float[] Update(float[] inputValues)
@@ -58,21 +51,21 @@ namespace Ivankarez.NeuralNetworks.Layers
             {
                 UpdateNode(nodeIndex, inputValues);
             }
-            return nodeValues;
+            return NodeValues;
         }
 
         private void UpdateNode(int nodeIndex, float[] inputValues)
         {
-            var nodeValue = recurrentWeights[nodeIndex] * nodeValues[nodeIndex];
+            var nodeValue = RecurrentWeights[nodeIndex] * NodeValues[nodeIndex];
             for (int inputIndex = 0; inputIndex < inputValues.Length; inputIndex++)
             {
-                nodeValue += inputValues[inputIndex] * weights[nodeIndex, inputIndex];
+                nodeValue += inputValues[inputIndex] * Weights[nodeIndex, inputIndex];
             }
-            if (useBias)
+            if (UseBias)
             {
-                nodeValue += biases[nodeIndex];
+                nodeValue += Biases[nodeIndex];
             }
-            nodeValues[nodeIndex] = activation.Apply(nodeValue);
+            NodeValues[nodeIndex] = Activation.Apply(nodeValue);
         }
     }
 }
