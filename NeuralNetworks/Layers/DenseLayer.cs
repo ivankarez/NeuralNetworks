@@ -1,7 +1,6 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.RandomGeneration;
 using Ivankarez.NeuralNetworks.Utils;
-using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -11,8 +10,6 @@ namespace Ivankarez.NeuralNetworks.Layers
         public ISize OutputSize { get; }
         public IInitializer KernelInitializer { get; }
         public IInitializer BiasInitializer { get; }
-        public NamedVectors<float> Parameters { get; }
-        public NamedVectors<float> State { get; }
 
         public IActivation Activation { get; set; }
         public float[] Output { get; private set; }
@@ -30,8 +27,6 @@ namespace Ivankarez.NeuralNetworks.Layers
             UseBias = useBias;
             KernelInitializer = kernelInitializer;
             BiasInitializer = biasInitializer;
-            Parameters = new NamedVectors<float>();
-            State = new NamedVectors<float>();
         }
 
         public void Build(ISize inputSize)
@@ -41,7 +36,6 @@ namespace Ivankarez.NeuralNetworks.Layers
             if (UseBias)
             {
                 Biases = BiasInitializer.GenerateValues(inputSize.TotalSize, OutputSize.TotalSize, OutputSize.TotalSize);
-                Parameters.Add("biases", Biases);
             }
         }
 

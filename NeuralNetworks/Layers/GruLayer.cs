@@ -1,7 +1,6 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.RandomGeneration;
 using Ivankarez.NeuralNetworks.Utils;
-using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -15,10 +14,6 @@ namespace Ivankarez.NeuralNetworks.Layers
         public IInitializer KernelInitializer { get; }
         public IInitializer RecurrentInitializer { get; }
         public IInitializer BiasInitializer { get; }
-
-        public NamedVectors<float> Parameters { get; } = null;
-        public NamedVectors<float> State { get; } = null;
-
         public float[][] ForgetGateWeights { get; set; }
         public float[][] CandidateWeights { get; set; }
         public float[] ForgetRecurrentWeights { get; set; }

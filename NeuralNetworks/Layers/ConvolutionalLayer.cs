@@ -1,7 +1,6 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.RandomGeneration;
 using Ivankarez.NeuralNetworks.Utils;
-using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -14,8 +13,6 @@ namespace Ivankarez.NeuralNetworks.Layers
         public bool UseBias { get; }
         public IInitializer KernelInitializer { get; }
         public IInitializer BiasInitializer { get; }
-        public NamedVectors<float> Parameters { get; }
-        public NamedVectors<float> State { get; }
         public float[] Filter { get; set; }
         public float[] Biases { get; set; }
         public float[] Output { get; private set; }

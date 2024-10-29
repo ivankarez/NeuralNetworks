@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Collections;
-using Ivankarez.NeuralNetworks.Values;
 
 namespace Ivankarez.NeuralNetworks.Test.Utils
 {
@@ -33,23 +32,6 @@ namespace Ivankarez.NeuralNetworks.Test.Utils
             {
                 values[i].Should().Be(value);
             }
-        }
-
-        public static float[] ShouldContain1D(this NamedVectors<float> namedVectors, string vectorName)
-        {
-            namedVectors.Get1dVectorNames().Should().Contain(vectorName);
-            return namedVectors.Get1dVector(vectorName);
-        }
-
-        public static float[,] ShouldContain2D(this NamedVectors<float> namedVectors, string vectorName)
-        {
-            namedVectors.Get2dVectorNames().Should().Contain(vectorName);
-            return namedVectors.Get2dVector(vectorName);
-        }
-
-        public static void ShouldNotContain1D(this NamedVectors<float> namedVectors, string vectorName)
-        {
-            namedVectors.Get1dVectorNames().Should().NotContain(vectorName);
         }
     }
 }

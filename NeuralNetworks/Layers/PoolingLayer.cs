@@ -1,6 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.Utils;
-using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -11,8 +10,6 @@ namespace Ivankarez.NeuralNetworks.Layers
         public int Window { get; }
         public int Stride { get; }
         public PoolingType Type { get; }
-        public NamedVectors<float> Parameters { get; }
-        public NamedVectors<float> State { get; }
         public float[] Output { get; set; }
 
         public PoolingLayer(int window, int stride, PoolingType type)

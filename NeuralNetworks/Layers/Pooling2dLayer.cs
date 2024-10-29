@@ -1,6 +1,5 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.Utils;
-using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -10,8 +9,6 @@ namespace Ivankarez.NeuralNetworks.Layers
         public Size2D OutputSize { get; private set; }
         ISize IModelLayer.OutputSize => OutputSize;
         public Size2D InputSize { get; set; }
-        public NamedVectors<float> Parameters { get; }
-        public NamedVectors<float> State { get; }
         public Size2D WindowSize { get; }
         public Stride2D Stride { get; }
         public PoolingType PoolingType { get; }

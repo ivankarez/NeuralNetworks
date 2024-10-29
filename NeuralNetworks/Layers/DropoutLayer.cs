@@ -1,14 +1,11 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.RandomGeneration;
-using Ivankarez.NeuralNetworks.Values;
 
 namespace Ivankarez.NeuralNetworks.Layers
 {
     public class DropoutLayer : IModelLayer
     {
         public ISize OutputSize { get; private set; }
-        public NamedVectors<float> Parameters { get; }
-        public NamedVectors<float> State { get; }
         public float DropoutRate { get; }
         public IRandomProvider RandomProvider { get; }
         public float[] Output { get; private set; }

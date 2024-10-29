@@ -1,7 +1,6 @@
 ﻿using Ivankarez.NeuralNetworks.Abstractions;
 using Ivankarez.NeuralNetworks.RandomGeneration;
 using Ivankarez.NeuralNetworks.Utils;
-using Ivankarez.NeuralNetworks.Values;
 using System;
 
 namespace Ivankarez.NeuralNetworks.Layers
@@ -10,8 +9,6 @@ namespace Ivankarez.NeuralNetworks.Layers
     {
         public Size2D OutputSize { get; private set; }
         ISize IModelLayer.OutputSize => OutputSize;
-        public NamedVectors<float> Parameters { get; }
-        public NamedVectors<float> State { get; }
         public Size2D InputSize { get; set; }
         public Size2D FilterSize { get; }
         public Stride2D Stride { get; }
@@ -26,8 +23,6 @@ namespace Ivankarez.NeuralNetworks.Layers
         public Convolutional2dLayer(Size2D filterSize, Stride2D stride,
             bool useBias, IInitializer kernelInitializer, IInitializer biasInitializer)
         {
-            Parameters = new NamedVectors<float>();
-            State = new NamedVectors<float>();
             FilterSize = filterSize ?? throw new ArgumentNullException(nameof(filterSize));
             Stride = stride ?? throw new ArgumentNullException(nameof(stride));
             UseBias = useBias;
